@@ -6,7 +6,7 @@
   <param n="id" t="string"><![CDATA[]]></param>
   <param n="data" t="string"><![CDATA[]]></param>
   <script encoded="false"><![CDATA["use strict"
-eval(System.getModule("com.wellsfargo.v2.vro.debug.logging").startActionSnippet(['password']));
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet(['password']));
 
 var headers = System.getModule("com.tungsten.ansibletower.impl.rest").createBasicHttpHeadersImpl(username, password);
 

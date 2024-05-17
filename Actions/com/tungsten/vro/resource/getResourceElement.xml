@@ -5,7 +5,7 @@
   <script encoded="false"><![CDATA["use strict"
 eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
 
-var basePath = "wellsfargo.v2";
+var basePath = "tungsten";
 
 var completePath = basePath + "/" + path;
  

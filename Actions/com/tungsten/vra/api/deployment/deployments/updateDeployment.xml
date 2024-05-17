@@ -8,7 +8,7 @@
   <script encoded="false"><![CDATA["use strict"
 eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
 
-var deployment = System.getModule("com.tungsten.vra.plugin.rest.deployment.deployment").updateDeploymentImpl(System.getModule("com.tungsten.vra.plugin.rest").getVRAHostImpl(environment), deploymentId, description, iconId, name);
+var deployment = System.getModule("com.tungsten.vra.plugin.rest.deployment.deployments").updateDeploymentImpl(System.getModule("com.tungsten.vra.plugin.rest").getVRAHostImpl(environment), deploymentId, description, iconId, name);
 
 System.debug("Deployment with id '" + deploymentId + "' = " + JSON.stringify(deployment));
  

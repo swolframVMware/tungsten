@@ -5,7 +5,7 @@
   <script encoded="false"><![CDATA["use strict"
 eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
 
-var response = System.getModule("com.wellsfargo.v2.vra.plugin.rest.catalog.admin.sources").deleteEntitlement(System.getModule("com.tungsten.vra.plugin.rest").getVRAHostImpl(environment), id);
+var response = System.getModule("com.tungsten.vra.plugin.rest.catalog.admin.sources").deleteEntitlement(System.getModule("com.tungsten.vra.plugin.rest").getVRAHostImpl(environment), id);
 
 System.debug("Delete entitlement response = " + JSON.stringify(response));
  

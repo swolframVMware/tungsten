@@ -8,6 +8,6 @@ var response = System.getModule("com.tungsten.vra.plugin.rest.iaas.image-profile
 
 System.debug("Image-Porifles = " + JSON.stringify(response));
  
-eval(System.getModule("com.wellsfargo.v2.vro.debug.logging").endActionSnippet());
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
 return response;]]></script>
 </dunes-script-module>

@@ -8,5 +8,5 @@ eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
 var resources = System.getModule("com.tungsten.vra.plugin.rest").executeRequestImpl(vraHost, "/deployment/api/deployments/" + resourceId + "/resources", "GET", null);
  
 eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
-return resources;]]></script>
+return resources; ]]></script>
 </dunes-script-module>
