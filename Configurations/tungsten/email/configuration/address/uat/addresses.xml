@@ -3,13 +3,13 @@
   <display-name><![CDATA[addresses]]></display-name>
   <atts>
     <att name="fromAddress" type="string" read-only="false">
-      <value encoded="n"><![CDATA[no-reply@cc-vra.testint.cloud.wellsfargo.net]]></value>
+      <value encoded="n"><![CDATA[no-reply@test.tungste.net]]></value>
     </att>
     <att name="administratorAddress" type="string" read-only="false">
-      <value encoded="n"><![CDATA[mark.milgram@wellsfargo.com]]></value>
+      <value encoded="n"><![CDATA[me@tungsten.com]]></value>
     </att>
     <att name="fromName" type="string" read-only="false">
-      <value encoded="n"><![CDATA[no-reply@cc-vra.testint.cloud.wellsfargo.net]]></value>
+      <value encoded="n"><![CDATA[no-reply@test.tungste.net]]></value>
     </att>
   </atts>
 </config-element>
