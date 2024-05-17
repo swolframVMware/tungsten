@@ -1,21 +1,22 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="7a1ff726-e482-4a2f-a866-517ea467d0dd" version="0.0.0" api-version="6.0.0" allowed-operations="vfe" editor-version="2.0" restartMode="1" resumeFromFailedMode="0">
-  <display-name><![CDATA[Set Provided Hostname]]></display-name>
-  <position y="50.0" x="100.0"/>
-  <input>
-    <param name="inputProperties" type="Properties"/>
-    <param name="__tokenName" type="string"/>
-  </input>
-  <output>
-    <param name="resourceNames" type="Array/string"/>
-  </output>
-  <workflow-item name="item0" type="end" end-mode="0">
-    <in-binding/>
-    <position y="50.0" x="340.0"/>
-  </workflow-item>
-  <workflow-item name="item1" out-name="item0" type="task">
-    <display-name><![CDATA[Set Custom Hostnaming]]></display-name>
-    <script encoded="false"><![CDATA[var hostnameOrigin = inputProperties.customProperties.hostnameOrigin;
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:workflow xmlns:ns2="http://vmware.com/vco/workflow" root-name="item1" object-name="workflow:name=generic" id="7a1ff726-e482-4a2f-a866-517ea467d0dd" editor-version="2.0" version="0.0.0" api-version="6.0.0" allowed-operations="vfe" restartMode="1" resumeFromFailedMode="0">
+    <display-name>Set Provided Hostname</display-name>
+    <position y="50.0" x="100.0"/>
+    <input>
+        <param name="inputProperties" type="Properties"/>
+        <param name="__tokenName" type="string"/>
+    </input>
+    <output>
+        <param name="resourceNames" type="Array/string"/>
+    </output>
+    <workflow-item name="item0" type="end" end-mode="0" comparator="0">
+        <in-binding/>
+        <out-binding/>
+        <position y="50.0" x="340.0"/>
+    </workflow-item>
+    <workflow-item name="item1" out-name="item0" type="task" comparator="0">
+        <display-name>Set Custom Hostnaming</display-name>
+        <script encoded="false">var hostnameOrigin = inputProperties.customProperties.hostnameOrigin;
 if(hostnameOrigin == undefined || hostnameOrigin == undefined) {
     throw "Custom Propertery 'hostnameOrigin' not defined";
 } 
@@ -26,12 +27,11 @@ switch(hostnameOrigin.toLowerCase()) {
         break;
     case "provided": 
         resourceNames = setHostname(inputProperties);        
+        System.log("Hostname set to : '" + resourceNames[0] + "'");
         break;
     default:
         throw "Unknown hostnameOrigin value '" + hostnameOrigin + "'";
 }
-
-var deployment = System.getModule("com.tungsten.vra.api.deployment.deployments").getDeployment(System.getModule("com.tungsten.system.configuration").getConfigurationProfile("vra"), inputProperties.deploymentId);
 
 /**
  * 
@@ -46,22 +46,14 @@ function setHostname(inputProperties) {
     resourceNames.push(hostname);
 
     return resourceNames;
-}]]></script>
-    <in-binding>
-      <bind name="inputProperties" type="Properties" export-name="inputProperties"/>
-    </in-binding>
-    <out-binding>
-      <bind name="resourceNames" type="Array/string" export-name="resourceNames"/>
-    </out-binding>
-    <description><![CDATA[Simple task with custom script capability.]]></description>
-    <position y="60.0" x="180.0"/>
-  </workflow-item>
-  <presentation>
-    <p-param name="inputProperties">
-      <desc><![CDATA[inputProperties]]></desc>
-    </p-param>
-    <p-param name="__tokenName">
-      <desc><![CDATA[__tokenName]]></desc>
-    </p-param>
-  </presentation>
-</workflow>
+}</script>
+        <in-binding>
+            <bind name="inputProperties" type="Properties" export-name="inputProperties"/>
+        </in-binding>
+        <out-binding>
+            <bind name="resourceNames" type="Array/string" export-name="resourceNames"/>
+        </out-binding>
+        <description>Simple task with custom script capability.</description>
+        <position y="60.0" x="180.0"/>
+    </workflow-item>
+</ns2:workflow>
