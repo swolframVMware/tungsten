@@ -6,7 +6,7 @@
       <value encoded="n"><![CDATA[https://ansibletower.tungsten.com/api/v2]]></value>
     </att>
     <att name="username" type="string" read-only="false">
-      <value encoded="n"><![CDATA[wellsfargo]]></value>
+      <value encoded="n"><![CDATA[tungsten]]></value>
     </att>
     <att name="password" type="SecureString" read-only="false"/>
     <att name="importCertificate" type="boolean" read-only="false">
