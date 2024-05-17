@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="createBlueprintVersionImpl" result-type="Any" api-version="6.0.0" id="ac593b0f-d01b-444c-bc00-7b7175d4cb1a" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.plugin.rest.blueprint.blueprints.versions">
+  <param n="vraHost" t="VRA:Host"><![CDATA[]]></param>
+  <param n="id" t="string"><![CDATA[]]></param>
+  <param n="changeLog" t="string"><![CDATA[]]></param>
+  <param n="description" t="string"><![CDATA[]]></param>
+  <param n="release" t="boolean"><![CDATA[]]></param>
+  <param n="version" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var data = {
+  "changeLog": changeLog,
+  "description": description,
+  "release": release,
+  "version": version
+}
+
+var response = System.getModule("com.tungsten.vra.plugin.rest").executeRequestImpl(vraHost, "/blueprint/api/blueprints/" + id + "/versions", "POST", JSON.stringify(data));
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return response;]]></script>
+</dunes-script-module>

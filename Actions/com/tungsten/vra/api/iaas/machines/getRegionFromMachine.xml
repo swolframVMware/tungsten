@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getRegionFromMachine" result-type="string" api-version="6.0.0" id="c75dc1c0-56dc-4733-9257-c92d56e87527" version="0.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.api.iaas.machines">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <param n="machineId" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA[var machine = System.getModule("com.tungsten.vra.api.iaas.machines").getMachine(environment, machineId);
+
+var cloudAccount = System.getModule("com.tungsten.vra.api.iaas.cloud-accounts").getCloudAccount(environment, machine.cloudAccountIds[0]);
+
+var enabledRegions = cloudAccount.enabledRegions;
+
+var regions = enabledRegions.filter(
+    function (region) {
+        return region.externalRegionId == machine.externalRegionId;
+    }
+);
+
+if(regions.length == 0) {
+    throw "No region found in cloud account id '" + machine.cloudAccountIds[0] + "' found with the external id of '" + machine.customProperties.datacenter + "' for machine id '" + machineId + "'";
+};
+
+if(regions.length > 1) {
+    throw "More than one region found in cloud account id '" + machine.cloudAccountIds[0] + "' found with the external id of '" + machine.customProperties.datacenter + "' for machine id '" + machineId + "'";
+};
+
+var region = regions[0];
+
+System.debug("Returning region = " + JSON.stringify(region));
+
+return region;]]></script>
+</dunes-script-module>

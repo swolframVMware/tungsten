@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="dumpWorkflowDataForVRLI" result-type="void" api-version="6.0.0" id="a963034f-e917-451c-8015-7284d7766eac" version="0.0.0" allowed-operations="vfe" category-name="com.tungsten.vro.debug.logging">
+  <param n="workflow" t="WorkflowToken"><![CDATA[]]></param>
+  <param n="context" t="Any"><![CDATA[]]></param>
+  <param n="inputProperties" t="Properties"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+
+System.log(
+    "vRO Workflow -> vRLI Data Dump = " + 
+    JSON.stringify(
+        {
+            workflowName: workflow.rootWorkflow.name,
+            inputProperties: inputProperties,
+            context: contextToProperties(context)
+        }
+    )
+);
+
+function contextToProperties(context) {
+    var parameterNames = context.parameterNames();
+
+    var parameters = new Properties();
+     
+    for each(var parameterName in parameterNames) {
+        parameters.put(parameterName, context.getParameter(parameterName));
+    }
+
+    return parameters;
+}]]></script>
+</dunes-script-module>

@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="addCatalogItemToProjectImpl" result-type="string" api-version="6.0.0" id="76a4cd71-f76d-49ad-b7bb-ccf1275748f0" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.plugin.rest.catalog.admin.entitlements">
+  <param n="vraHost" t="VRA:Host"><![CDATA[]]></param>
+  <param n="projectId" t="string"><![CDATA[]]></param>
+  <param n="catalogItemId" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var data = {
+    "id": "",
+    "projectId": projectId,
+    "definition": {
+        "type": "CatalogItemIdentifier",
+        "id": catalogItemId,
+        "name": "",
+        "description": "",
+        "numItems": 0,
+        "sourceType": ""
+    }
+};
+
+var topics = System.getModule("com.tungsten.vra.plugin.rest").executeRequestImpl(vraHost, "/catalog/api/admin/entitlements", "POST", JSON.stringify(data));
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return topics;]]></script>
+</dunes-script-module>

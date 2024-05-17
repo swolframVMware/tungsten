@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getFabricVsphereDatastoresImpl" result-type="Any" api-version="6.0.0" id="baf9f70e-bf37-4425-aa4e-8f78ca35d2d2" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.plugin.rest.iaas.fabric-vsphere-datastores">
+  <param n="vraHost" t="VRA:Host"><![CDATA[]]></param>
+  <param n="top" t="string"><![CDATA[]]></param>
+  <param n="skip" t="string"><![CDATA[]]></param>
+  <param n="count" t="string"><![CDATA[]]></param>
+  <param n="select" t="string"><![CDATA[]]></param>
+  <param n="filter" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var urlParameters = System.getModule("com.tungsten.vra.plugin.rest").createUrlParametersImpl(new Properties({$top: top, $skip: skip, $count: count, $select: select, $filter: filter}));
+ 
+var response = System.getModule("com.tungsten.vra.plugin.rest").executeRequestImpl(vraHost, "/iaas/api/fabric-vsphere-datastores" + urlParameters, "GET", null);
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return response;]]></script>
+</dunes-script-module>

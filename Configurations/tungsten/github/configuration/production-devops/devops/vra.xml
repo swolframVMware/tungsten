@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<config-element id="387cac60-01fb-4e8c-8c8b-d222fc909946" version="0.0.0" allowed-operations="vfe">
+  <display-name><![CDATA[vra]]></display-name>
+  <atts>
+    <att name="organization" type="string" read-only="false">
+      <value encoded="n"><![CDATA[vra]]></value>
+    </att>
+    <att name="project" type="string" read-only="false">
+      <value encoded="n"><![CDATA[templates]]></value>
+    </att>
+  </atts>
+</config-element>

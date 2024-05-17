@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="requestPullAndWait" result-type="CompositeType(statusCode:number,responseString:string,restHost:REST:RESTHost):RestResponseWithHost" api-version="6.0.0" id="d702b54d-848d-4d44-810c-9c09281c290e" version="0.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.api.vco.content-repository.requests.pull">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <param n="retryWait" t="number"><![CDATA[millis]]></param>
+  <param n="retries" t="number"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var response = System.getModule("com.tungsten.vra.api.vco.content-repository.requests.pull").requestPull(environment);
+
+var status = response.status;
+while(status.toLowerCase() == "running") {
+    System.log("Waiting '" + retryWait + "' seconds to check the status of the pull...");
+    System.sleep(retryWait);
+    response = System.getModule("com.tungsten.vra.api").getLink(environment, response.href.substring(response.href.indexOf("/vco"), response.href.length));
+
+    status = response.status;
+}
+
+System.log("Ending with status: " + status);
+
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return response;]]></script>
+</dunes-script-module>

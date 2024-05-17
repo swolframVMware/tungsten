@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getCatalogItems" result-type="Any" api-version="6.0.0" id="3fe3605e-d6ab-4c00-8865-7d721fa7f53a" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.api.catalog.items">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <param n="skip" t="number"><![CDATA[]]></param>
+  <param n="orderby" t="string"><![CDATA[]]></param>
+  <param n="top" t="number"><![CDATA[]]></param>
+  <param n="expandProjects" t="boolean"><![CDATA[]]></param>
+  <param n="search" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var items = System.getModule("com.tungsten.vra.plugin.rest.catalog.items").getCatalogItemsImpl(System.getModule("com.tungsten.vra.plugin.rest").getVRAHostImpl(environment), skip, orderby, top, expandProjects, search);
+
+if (!expandProjects){
+    items.content = items.content.map(function(item){
+        item.projectIds = "redacted to preserve memory";
+        return item;
+    });
+}
+
+System.debug("Get catlog items response = " + JSON.stringify(items));
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return items;]]></script>
+</dunes-script-module>

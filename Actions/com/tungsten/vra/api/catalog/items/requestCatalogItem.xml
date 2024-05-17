@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="requestCatalogItem" result-type="Any" api-version="6.0.0" id="5ca73bcf-9b10-4d57-95a5-cb9af19d70e6" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.api.catalog.items">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <param n="catalogItemId" t="string"><![CDATA[]]></param>
+  <param n="projectId" t="string"><![CDATA[]]></param>
+  <param n="deploymentName" t="string"><![CDATA[]]></param>
+  <param n="bulkRequestCount" t="number"><![CDATA[]]></param>
+  <param n="version" t="string"><![CDATA[]]></param>
+  <param n="reason" t="string"><![CDATA[]]></param>
+  <param n="inputs" t="Properties"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+if (!deploymentName) {
+    deploymentName = null
+}
+if (!reason) {
+    reason = null
+}
+
+var response = System.getModule("com.tungsten.vra.plugin.rest.catalog.items").requestCatalogItemImpl(System.getModule("com.tungsten.vra.plugin.rest").getVRAHostImpl(environment), catalogItemId, projectId, deploymentName, bulkRequestCount, version, reason, inputs);
+
+System.debug("Request catlog item response = " + JSON.stringify(response));
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return response;]]></script>
+</dunes-script-module>

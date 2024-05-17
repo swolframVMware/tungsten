@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getTopics" result-type="string" api-version="6.0.0" id="62e153a0-c4e7-44ff-946e-0a454a71d2ab" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.api.event-broker.topics">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <param n="page" t="number"><![CDATA[]]></param>
+  <param n="size" t="string"><![CDATA[]]></param>
+  <param n="orderby" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var topics = System.getModule("com.tungsten.vra.plugin.rest.event-broker.topics").getTopicsImpl(System.getModule("com.tungsten.vra.plugin.rest").getVRAHostImpl(environment), page, size, orderby);
+
+System.debug("Get topics response = " + JSON.stringify(topics));
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return topics;]]></script>
+</dunes-script-module>

@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="startActionSnippet" result-type="string" api-version="6.0.0" id="83670030-c46b-46f6-aca4-4b50e86b2dc8" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vro.debug.logging">
+  <param n="filters" t="Array/string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+ 
+var codeSnippet;
+ 
+if(filters == undefined || filters == null || filters.length == 0) {
+    codeSnippet = "__debug_log(arguments, []);";
+} else {
+   codeSnippet = "__debug_log(arguments, [" + filters.join(",") + "]);";
+}
+ 
+codeSnippet +=
+    "function __debug_log(args, filters) {" +
+        "var name = args.callee.name.substr(6);" +
+        "var values = JSON.stringify(args);" + 
+ 
+        "if(filters.length > 0) {" +
+            "for each(var filter in filters) {" +
+                "if(filter == undefined || filter == null || filter.length == 0) continue;" +
+                "values = values.replace(JSON.stringify(filter), '*!*!*!*')" + 
+            "}" +
+        "}" +
+ 
+        "System.debug('Executing action, \' + name + \', with arguments: ' + values);" +
+    "}";
+ 
+return codeSnippet;]]></script>
+</dunes-script-module>

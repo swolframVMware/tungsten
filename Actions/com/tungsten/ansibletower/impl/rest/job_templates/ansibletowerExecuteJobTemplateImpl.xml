@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="ansibletowerExecuteJobTemplateImpl" result-type="Any" api-version="6.0.0" id="3a3557ed-d008-47c7-8310-6fe571b3f9a2" version="1.0.1" allowed-operations="vfe" category-name="com.tungsten.ansibletower.impl.rest.job_templates">
+  <param n="restHost" t="REST:RESTHost"><![CDATA[]]></param>
+  <param n="username" t="string"><![CDATA[]]></param>
+  <param n="password" t="SecureString"><![CDATA[]]></param>
+  <param n="id" t="string"><![CDATA[]]></param>
+  <param n="data" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.wellsfargo.v2.vro.debug.logging").startActionSnippet(['password']));
+
+var headers = System.getModule("com.tungsten.ansibletower.impl.rest").createBasicHttpHeadersImpl(username, password);
+
+var response = System.getModule("com.tungsten.rest").executeRestOperation(restHost, "POST", headers, "job_templates/" + id + "/launch/", data, true);
+
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return response;]]></script>
+</dunes-script-module>

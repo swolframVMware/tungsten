@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="deleteSubscriptionImpl" result-type="void" api-version="6.0.0" id="52922a6a-78ba-4ffb-be91-8203493b2ae6" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.plugin.rest.event-broker.subscriptions">
+  <param n="vraHost" t="VRA:Host"><![CDATA[]]></param>
+  <param n="id" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+System.getModule("com.tungsten.vra.plugin.rest").executeRequestImpl(vraHost, "/event-broker/api/subscriptions/" + id, "DELETE", null);
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return;]]></script>
+</dunes-script-module>

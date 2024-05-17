@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="ansibletowerWaitForJob" result-type="Any" api-version="6.0.0" id="e762bc4d-1815-4e56-9293-14060a24938b" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.ansibletower.api.jobs">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <param n="id" t="string"><![CDATA[]]></param>
+  <param n="retryWait" t="number"><![CDATA[millis]]></param>
+  <param n="timeout" t="number"><![CDATA[millis]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+ 
+var jobFinished = null;
+var job;
+
+var start = System.getCurrentTime();
+
+while(jobFinished == null) { 
+    if((System.getCurrentTime() -start) > timeout) {
+        throw "Timeout waiting on job '" + id + "'";
+    }
+
+    System.log("Waiting " + retryWait + " millis to check on the completion of job, '" + id + "'...");
+    System.sleep(retryWait);
+
+    System.log("Checking on job, '" + id + "'...");
+    job = System.getModule("com.tungsten.ansibletower.api.jobs").ansibletowerGetJob(environment, id)
+
+    jobFinished = job.finished;
+}
+System.log("'" + jobId + "' finished.");
+
+System.debug("Job Details: " + JSON.stringify(job));
+
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return job;]]></script>
+</dunes-script-module>

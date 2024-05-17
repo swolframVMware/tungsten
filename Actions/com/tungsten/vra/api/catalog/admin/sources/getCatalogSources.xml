@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getCatalogSources" result-type="Any" api-version="6.0.0" id="2f71f460-5fe6-4db1-badd-0a688b4175ee" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.api.catalog.admin.sources">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <param n="skip" t="string"><![CDATA[]]></param>
+  <param n="orderby" t="string"><![CDATA[]]></param>
+  <param n="top" t="string"><![CDATA[]]></param>
+  <param n="projectId" t="string"><![CDATA[]]></param>
+  <param n="search" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var response = System.getModule("com.tungsten.vra.plugin.rest.catalog.admin.sources").getCatalogSourcesImpl(System.getModule("com.tungsten.vra.plugin.rest").getVRAHostImpl(environment), skip, orderby, top, projectId, search);
+
+System.debug("Get catalog sources response = " + JSON.stringify(response));
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return response;]]></script>
+</dunes-script-module>

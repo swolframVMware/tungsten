@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="ansibletowerGetWorkflowJobWorkflowNodes" result-type="Any" api-version="6.0.0" id="648c9ef5-9db7-4d72-a5d7-e0819b854093" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.ansibletower.api.workflow_jobs.workflow_nodes">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <param n="id" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+ 
+var configuration = System.getModule("com.tungsten.ansibletower.impl.configuration").getEnvironmentConfigurationImpl(environment, "host");
+ 
+var restHost = System.getModule("com.tungsten.ansibletower.impl.rest").getRestHostImpl(configuration.url, configuration.importCertificate);
+
+var response = System.getModule("com.tungsten.ansibletower.impl.rest.workflow_jobs.workflow_nodes").ansibletowerGetWorkflowJobWorkflowNodesImpl(restHost, configuration.username, configuration.password, id);
+
+var content = JSON.parse(response.contentAsString);
+
+System.debug("Workflow Job Notifications response: " + JSON.stringify(content));
+
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return content;]]></script>
+</dunes-script-module>

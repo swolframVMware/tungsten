@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="ansibletowerGetWorkflowJobWorkflowNodesImpl" result-type="string" api-version="6.0.0" id="266107b9-9bb5-4fd9-913d-be9c401b7b89" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.ansibletower.impl.rest.workflow_jobs.workflow_nodes">
+  <param n="restHost" t="REST:RESTHost"><![CDATA[]]></param>
+  <param n="username" t="string"><![CDATA[]]></param>
+  <param n="password" t="SecureString"><![CDATA[]]></param>
+  <param n="id" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet(['password']));
+
+var headers = System.getModule("com.tungsten.ansibletower.impl.rest").createBasicHttpHeadersImpl(username, password);
+
+var response = System.getModule("com.tungsten.rest").executeRestOperation(restHost, "GET", headers, "workflow_jobs/" + id + "/workflow_nodes", null, true);
+
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return response;]]></script>
+</dunes-script-module>

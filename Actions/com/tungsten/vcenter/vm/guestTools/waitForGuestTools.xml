@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="waitForGuestTools" result-type="void" api-version="6.0.0" id="03f98bd1-f935-424e-be81-c898a43bce52" version="0.0.0" allowed-operations="vfe" category-name="com.tungsten.vcenter.vm.guestTools">
+  <param n="vm" t="VC:VirtualMachine"><![CDATA[]]></param>
+  <param n="maxRetries" t="number"><![CDATA[]]></param>
+  <param n="retrySleep" t="number"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+
+var retries = 0;
+
+System.log("Waiting for VM to be available....");
+
+while(!vm.guest.guestOperationsReady) { 
+    retries++;
+    if(retries > maxRetries) {
+        throw "Waiting for guest tools timed out on vm: " + vm.name;
+    }    
+
+    System.log("Guest tools is not available sleeping '" + retrySleep + "' milliseconds....");
+    System.sleep(retrySleep);
+}
+
+System.log("VM Tools is avilable!");]]></script>
+</dunes-script-module>

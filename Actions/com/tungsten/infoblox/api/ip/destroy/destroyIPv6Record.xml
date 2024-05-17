@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="destroyIPv6Record" result-type="string" api-version="6.0.0" id="102f4905-0922-4556-afff-4614e6db0812" version="0.0.0" allowed-operations="vfe" category-name="com.tungsten.infoblox.api.ip.destroy">
+  <param n="profile" t="string"><![CDATA[]]></param>
+  <param n="address" t="string"><![CDATA[]]></param>
+  <param n="fqdn" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var response = System.getModule("com.wellsfargo.v2.infoblox.impl.ansible.ip.destroy").destroyIPv6RecordImpl(profile, address, fqdn);
+
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return response;]]></script>
+</dunes-script-module>

@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getBlueprints" result-type="Any" api-version="6.0.0" id="6bca238a-134b-4225-937d-b8b8ee90fb2d" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.api.blueprint.blueprints">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <param n="orderby" t="string"><![CDATA[]]></param>
+  <param n="select" t="string"><![CDATA[]]></param>
+  <param n="skip" t="number"><![CDATA[]]></param>
+  <param n="top" t="number"><![CDATA[]]></param>
+  <param n="name" t="string"><![CDATA[]]></param>
+  <param n="projects" t="Array/string"><![CDATA[]]></param>
+  <param n="propertyGroups" t="Array/string"><![CDATA[]]></param>
+  <param n="released" t="boolean"><![CDATA[]]></param>
+  <param n="search" t="string"><![CDATA[]]></param>
+  <param n="versioned" t="boolean"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var response = System.getModule("com.tungsten.vra.plugin.rest.blueprint.blueprints").getBlueprintsImpl(System.getModule("com.tungsten.vra.plugin.rest").getVRAHostImpl(environment), orderby, select, skip, top, name, projects, propertyGroups, released, search, versioned);
+
+System.debug("Get blueprints response = " + JSON.stringify(response));
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return response;]]></script>
+</dunes-script-module>

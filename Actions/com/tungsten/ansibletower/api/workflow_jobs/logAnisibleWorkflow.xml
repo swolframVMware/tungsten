@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="logAnisibleWorkflow" result-type="void" api-version="6.0.0" id="3581722c-a640-4eb1-9c67-c6095e3c9496" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.ansibletower.api.workflow_jobs">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <param n="jobId" t="string"><![CDATA[]]></param>
+  <param n="workflowJobTemplateName" t="string"><![CDATA[]]></param>
+  <param n="workflowName" t="string"><![CDATA[]]></param>
+  <param n="workflowId" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var workflowJobNodes = System.getModule("com.tungsten.ansibletower.api.workflow_jobs.workflow_nodes").ansibletowerGetWorkflowJobWorkflowNodes(environment, jobId);
+
+for each(var workflowJobNode in workflowJobNodes.results) {
+    if(workflowJobNode.job != null) {
+        var jobStdOut = System.getModule("com.tungsten.ansibletower.api.jobs.stdout").ansibletowerGetJobStdOut(environment, workflowJobNode.job);
+
+        var decodedStdOut = System.getModule("com.tungsten.ansibletower.api.jobs.stdout").decodeStdOut(jobStdOut);
+
+        System.log(
+            "********************************" + workflowJobNode.summary_fields.job.name + "********************************\n" +
+            decodedStdOut
+        );
+
+        System.getModule("com.tungsten.ansibletower.api.jobs.stdout").logDecodedStdOutForVRLI(decodedStdOut, workflowJobTemplateName, jobId, workflowJobNode.summary_fields.job.name, workflowJobNode.summary_fields.job.id, workflow.name, workflow.id);
+    }
+}    
+
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return;]]></script>
+</dunes-script-module>

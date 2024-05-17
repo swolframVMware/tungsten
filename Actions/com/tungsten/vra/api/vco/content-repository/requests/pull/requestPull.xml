@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="requestPull" result-type="string" api-version="6.0.0" id="90cccdc6-557a-4b76-afef-c6cce850e1a2" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.api.vco.content-repository.requests.pull">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var response = System.getModule("com.tungsten.vra.plugin.rest.vco.content-repository.request.pull").requestPullImpl(System.getModule("com.tungsten.vra.plugin.rest").getVRAHostImpl(environment));
+
+System.debug("Request pull = " + JSON.stringify(response));
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return response;]]></script>
+</dunes-script-module>

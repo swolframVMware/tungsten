@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="updateBlueprint" result-type="Any" api-version="6.0.0" id="bd5af19f-a679-466f-b614-786aa0ee82ac" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.api.blueprint.blueprints">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <param n="id" t="string"><![CDATA[]]></param>
+  <param n="content" t="string"><![CDATA[]]></param>
+  <param n="description" t="string"><![CDATA[]]></param>
+  <param n="name" t="string"><![CDATA[]]></param>
+  <param n="projectId" t="string"><![CDATA[]]></param>
+  <param n="requestScopeOrg" t="boolean"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var response = System.getModule("com.tungsten.vra.plugin.rest.blueprint.blueprints").updateBlueprintImpl(System.getModule("com.tungsten.vra.plugin.rest").getVRAHostImpl(environment), id, content, description, name, projectId, requestScopeOrg);
+
+System.debug("Update blueprint, '" + id + "', response = " + JSON.stringify(response));
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return response;]]></script>
+</dunes-script-module>

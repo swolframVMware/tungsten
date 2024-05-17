@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getWorkflowByName" result-type="Workflow" api-version="6.0.0" id="db0cbe9b-4294-4b77-9023-e4f0307b8a63" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vro.workflow">
+  <param n="path" t="string"><![CDATA[]]></param>
+  <param n="name" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+ 
+var workflowCategory = Server.getWorkflowCategoryWithPath(path);
+ 
+if(workflowCategory == null) {
+    throw "No workflow category with the name found '" + path + "'";
+}
+ 
+var foundWorkflow = null;
+for each(workflow in workflowCategory.workflows) {
+    if(name == workflow.name) {
+        foundWorkflow = workflow
+    }
+}
+ 
+if(foundWorkflow == null) { 
+    throw "No workflow found in the category '" + path + "' with the name '" + name + "', check for leading and treading spaces on the actual workflow/path!";
+}
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return foundWorkflow;]]></script>
+</dunes-script-module>

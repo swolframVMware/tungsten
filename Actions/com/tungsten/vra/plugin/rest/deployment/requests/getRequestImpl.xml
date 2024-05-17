@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getRequestImpl" result-type="Any" api-version="6.0.0" id="144187ef-180f-4a89-917f-ed06ca74f714" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.plugin.rest.deployment.requests">
+  <param n="vraHost" t="VRA:Host"><![CDATA[]]></param>
+  <param n="requestId" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+ 
+var request = System.getModule("com.tungsten.vra.plugin.rest").executeRequestImpl(vraHost, "/deployment/api/requests/" + requestId, "GET", null);
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return request;]]></script>
+</dunes-script-module>

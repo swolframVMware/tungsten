@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="ansibletowerExecuteWaitLogRetry" result-type="void" api-version="6.0.0" id="1aba507a-026b-4209-8ba2-937b8bd10112" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.ansibletower.api.jobs">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <param n="jobTemplate" t="string"><![CDATA[]]></param>
+  <param n="data" t="string"><![CDATA[millis]]></param>
+  <param n="retries" t="number"><![CDATA[millis]]></param>
+  <param n="retryWait" t="number"><![CDATA[]]></param>
+  <param n="jobStatusWait" t="number"><![CDATA[]]></param>
+  <param n="jobTimeout" t="number"><![CDATA[]]></param>
+  <param n="workflowName" t="string"><![CDATA[]]></param>
+  <param n="workflowId" t="string"><![CDATA[]]></param>
+  <param n="byName" t="boolean"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+ 
+var retryCount = 0;
+
+while(true) {
+    try {
+        System.getModule("com.tungsten.ansibletower.api.jobs").ansibletowerExecuteWaitLog(environment, jobTemplate, data, jobStatusWait, jobTimeout, workflowName, workflowId, byName);
+        break;
+    } catch(exception) {
+        if(retryCount < retries) {
+            retryCount++
+            System.log("Got exception: " + exception);
+            System.log("Waiting " + retryWait + " minutes.");
+            System.sleep(1000 * 60 * retryWait);
+        } else {
+            throw exception;
+        }
+    }
+}
+
+
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return;]]></script>
+</dunes-script-module>

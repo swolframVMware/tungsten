@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getRestHost" result-type="REST:RESTHost" api-version="6.0.0" id="2717bdc3-c803-4085-8ffb-3d14d448e9b6" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.rest">
+  <param n="url" t="string"><![CDATA[]]></param>
+  <param n="doImportCertificate" t="boolean"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+if(doImportCertificate) {
+    importCertificate(url);
+}
+
+var restHost = createRestHost(url);
+
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return restHost;
+ 
+function createRestHost(url) {
+    System.debug("Creating RESTHost: " + url + "...");
+    var host = new RESTHost(url);
+    System.debug("Created RESTHost: " + url + "...");
+
+    host.name = generateNameFromUrl(url);
+    host.url = url;
+    host.hostVerification = false;
+    host.proxyHost = null;
+    host.proxyPort = 0;
+    
+    System.debug("Creating transient host...");
+    host = RESTHostManager.createTransientHostFrom(host);
+    System.debug("Created transient host.");
+
+    System.debug("Reloading Rest Host Manager Configuration...");
+    RESTHostManager.reloadConfiguration();
+    System.debug("Reloaded Rest Host Manager Configuration.");
+    
+    return host;
+}
+ 
+function importCertificate(url) {
+    var ld = Config.getKeystores().getImportCAFromUrlAction();
+    var model = ld.getModel();
+    model.value = url;
+    error = ld.execute();
+}
+ 
+function generateNameFromUrl(url) {
+    System.debug("Generating RESTHost name from: " + url + "...");
+    var name = url;
+    name = name.replace(/https:\/\//i, '');
+    name = name.replace(/http:\/\//i, '');
+    name = name.replace(/\W/g, '_');
+    
+    System.debug("Generating RESTHost name: '" + name + "'");
+    return name;
+}]]></script>
+</dunes-script-module>

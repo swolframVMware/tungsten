@@ -1,0 +1,1 @@
+{"schema":{"emailAddress":{"id":"emailAddress","type":{"dataType":"string"},"label":"emailAddress","constraints":{"required":false}}},"layout":{"pages":[{"id":"page_v3ncfett","title":"General","sections":[{"id":"section_3mnhj6x1","fields":[{"id":"emailAddress","display":"textField","signpostPosition":"right-middle","state":{"visible":true,"read-only":false}}]}]}]},"itemId":""}

@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getFlavorsImpl" result-type="Any" api-version="6.0.0" id="6b59ac6d-c6b0-4620-82d7-6e6c1249b89e" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.plugin.rest.iaas.flavors">
+  <param n="vraHost" t="VRA:Host"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+ 
+var response = System.getModule("com.tungsten.vra.plugin.rest").executeRequestImpl(vraHost, "/iaas/api/flavors", "GET", null);
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return response;]]></script>
+</dunes-script-module>

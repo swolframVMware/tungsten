@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getSubscriptionsImpl" result-type="Any" api-version="6.0.0" id="cdc94d7b-639e-4750-a8c4-eb9cf3e0f1be" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.plugin.rest.event-broker.subscriptions">
+  <param n="vraHost" t="VRA:Host"><![CDATA[]]></param>
+  <param n="page" t="number"><![CDATA[]]></param>
+  <param n="size" t="number"><![CDATA[]]></param>
+  <param n="orderby" t="string"><![CDATA[]]></param>
+  <param n="filter" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var urlParameters = System.getModule("com.tungsten.vra.plugin.rest").createUrlParametersImpl(new Properties({page: page, size: size, orderby: orderby, $filter: filter}));
+ 
+var subscriptions = System.getModule("com.tungsten.vra.plugin.rest").executeRequestImpl(vraHost, "/event-broker/api/subscriptions" + urlParameters, "GET", null);
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return subscriptions;]]></script>
+</dunes-script-module>

@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="destroyDeployment" result-type="Any" api-version="6.0.0" id="29bc4c5e-f22e-4d96-800a-a9bfa3deb3c4" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.api.deployment.deployments">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <param n="deploymentId" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var response = System.getModule("com.tungsten.vra.plugin.rest.deployment.deployments").destroyDeploymentImpl(System.getModule("com.tungsten.vra.plugin.rest").getVRAHostImpl(environment), deploymentId);
+
+System.debug("Destroy deployment with id '" + deploymentId + "' = " + JSON.stringify(response));
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return response;]]></script>
+</dunes-script-module>

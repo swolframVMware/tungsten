@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<config-element id="289d2a67-15cc-4271-8597-f9a8965f5ff7" version="0.0.0" allowed-operations="vfe">
+  <display-name><![CDATA[standard]]></display-name>
+  <atts>
+    <att name="closeAtOrAbboveAvaiblePrecent" type="number" read-only="false">
+      <value encoded="n"><![CDATA[79.5]]></value>
+    </att>
+  </atts>
+</config-element>

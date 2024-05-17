@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getRestHostImpl" result-type="REST:RESTHost" api-version="6.0.0" id="6385e0a2-fa77-4d60-aee1-fa67467d3f85" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.github.impl.rest">
+  <param n="url" t="string"><![CDATA[]]></param>
+  <param n="importCertificate" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var restHost = System.getModule("com.tungsten.rest").getRestHost(url, importCertificate)
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return restHost;]]></script>
+</dunes-script-module>

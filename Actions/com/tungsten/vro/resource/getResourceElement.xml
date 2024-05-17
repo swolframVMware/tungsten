@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getResourceElement" result-type="ResourceElement" api-version="6.0.0" id="761d627f-00b3-4a97-a86c-026d05c78a62" version="0.0.0" allowed-operations="vfe" category-name="com.tungsten.vro.resource">
+  <param n="path" t="string"><![CDATA[]]></param>
+  <param n="name" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var basePath = "wellsfargo.v2";
+
+var completePath = basePath + "/" + path;
+ 
+var resourceElementCategory = Server.getResourceElementCategoryWithPath(completePath);
+if(resourceElementCategory == undefined || resourceElementCategory == null) {
+    throw "Could not get resource category '" + completePath + "'";
+}
+ 
+var resourceElement;
+ 
+for each (var resourceElement in resourceElementCategory.allResourceElements) {
+    if(resourceElement.name.toLowerCase().equals(name.toLowerCase())) {
+        break;
+    }
+}
+ 
+if(resourceElement == null) {
+    throw "Could not find '" + name + "' in '" + completePath + "'";
+}
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return resourceElement;]]></script>
+</dunes-script-module>

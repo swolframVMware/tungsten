@@ -1,0 +1,151 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="8a1f3ff4-fae8-46f0-aec9-dc11a98fc202" version="0.0.0" api-version="6.0.0" allowed-operations="vfe" editor-version="2.0" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Ansible Tower - Execute Job Templates]]></display-name>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="inputProperties" type="Properties"/>
+    <param name="__tokenName" type="string"/>
+  </input>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <in-binding/>
+    <position y="50.0" x="340.0"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item0" type="task">
+    <display-name><![CDATA[Execute Job Templates]]></display-name>
+    <script encoded="false"><![CDATA["use strict"
+
+var VM_ROLE = System.getModule("com.wellsfargo.v2.wellsfargo.data").getWellsFargoVMServerRoles()[inputProperties.customProperties.server_system_role];
+var ANSIBLE_PROFILE = "ansibletower_" + VM_ROLE.type.toLowerCase();
+
+if(inputProperties.customProperties.executeAnsible == undefined) {
+    System.warn("No executeAnsible, nothing to execute...")
+} else {
+    processExecuteAnsible(inputProperties);
+}
+
+/**
+ * 
+ */ 
+function processExecuteAnsible(inputProperties) { 
+    var executeAnsible = JSON.parse(inputProperties.customProperties.executeAnsible);
+
+    for each(var template in executeAnsible.templates) {
+        var tries = 0;
+        var success = false;
+        while(!success) {
+            try {
+                tries++;
+                executeAnsibleCallAndWait(inputProperties, template);
+                success = true;
+            } catch(exception) {
+                success = false;
+                if(tries <= template.retries) {
+                    System.warn("Got exception: " + exception)
+                    System.warn("Waiting " + template.retryWait + " minutes before retry # " + tries + " of " + template.retries);
+                    System.sleep(template.retryWait * 1000 * 60);
+                } else {
+                    throw exception;
+                }
+            }  
+        }
+    }
+}
+
+/**
+ * 
+ */
+function executeAnsibleCallAndWait(inputProperties, template) {
+    System.log("****************************************** Executing '" + template.name + "' ******************************************");
+    var response = System.getModule("com.tungsten.ansibletower.api.job_templates").ansibletowerExecuteJobTemplateByName(System.getModule("com.tungsten.system.configuration").getConfigurationProfile(ANSIBLE_PROFILE), template.name, JSON.stringify({credentials: template.credentials, extra_vars: getParameters(template.data, inputProperties)}));
+
+    var jobId = response.job;
+    var jobFinished = null;
+    var job;
+
+    while(jobFinished == null) { 
+        System.log("Waiting 1 minute to check on the completion of job, '" + jobId + "'...");
+        System.sleep(60000); // wait 1 minute
+
+        System.log("Checking on job, '" + jobId + "'...");
+        job = System.getModule("com.tungsten.ansibletower.api.jobs").ansibletowerGetJob(System.getModule("com.tungsten.system.configuration").getConfigurationProfile(ANSIBLE_PROFILE), jobId)
+
+        jobFinished = job.finished;
+    }
+    System.log("'" + jobId + "' finished.");
+
+    System.getModule("com.tungsten.ansibletower.api.jobs").logAnisibleJob(System.getModule("com.tungsten.system.configuration").getConfigurationProfile(ANSIBLE_PROFILE), jobId, template.name, workflow.name, workflow.id);
+
+    if(job.failed) {
+        throw "Error with job template, '" + template.name + "', job #: " + jobId + ". Dumped ansible stdout to the logs.";
+    }
+}
+
+/**
+ * 
+ */
+function getParameters(parameters, inputProperties) {
+    parameters = replaceMarkers(parameters, inputProperties)
+
+    for (var key in parameters) {
+        if (parameters.hasOwnProperty(key)) {
+            if(parameters[key]["_encode"] == true) {
+                delete parameters[key]["_encode"];
+                parameters[key] = JSON.stringify(parameters[key]);
+            }
+        }
+    }
+ 
+    return parameters;
+}
+
+/**
+ * 
+ */
+function replaceMarkers(parameters, inputProperties) {
+    for (var key in parameters) {
+        if (parameters.hasOwnProperty(key)) {
+            var value = parameters[key];
+            if (typeof(value) == "string") {
+                if (value.charAt(0) == "<" && value.charAt(value.length - 1) == ">") {
+                    parameters[key] = getMarkerValue(value, inputProperties);
+                }   
+            } else {
+                parameters[key] = replaceMarkers(value, inputProperties);
+            }
+        }
+    }
+
+    return parameters;
+}
+
+/**
+ * 
+ */
+function getMarkerValue(marker, inputProperties) {
+    switch(marker) {
+        case "<hostname>":
+            return inputProperties.resourceNames[0] + "." + inputProperties.customProperties.domain;
+            break;
+        case "<ip_address[0]>":
+            return inputProperties.addresses[0][0];
+            break;
+        default: 
+            throw "Unknown replacement marker '" + marker + "'";
+    }
+}]]></script>
+    <in-binding>
+      <bind name="inputProperties" type="Properties" export-name="inputProperties"/>
+    </in-binding>
+    <out-binding/>
+    <description><![CDATA[Simple task with custom script capability.]]></description>
+    <position y="60.0" x="180.0"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="inputProperties">
+      <desc><![CDATA[inputProperties]]></desc>
+    </p-param>
+    <p-param name="__tokenName">
+      <desc><![CDATA[__tokenName]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

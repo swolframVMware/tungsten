@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="decodeStdOut" result-type="string" api-version="6.0.0" id="59ba563d-fccf-4529-96f7-895bbe8f8d8a" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.ansibletower.api.jobs.stdout">
+  <param n="jobStdOut" t="Any"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var content = jobStdOut.content;
+
+var decoded = 
+    JSON.stringify(content)
+        .replace(/\\r/g, '\r')
+        .replace(/\\n/g, '\n')
+        .replace(/\\u001b/g, '')
+        .replace(/\\"/g, '"')
+        .replace(/\[0m/g, '')
+        .replace(/\[0;31m/g, '') 
+        .replace(/\[0;32m/g, '')        
+        .replace(/\[0;33m/g, '') 
+        .replace(/\[0;36m/g, '') 
+        .replace(/\[1;31m/g, '') 
+        .replace(/\[1;35m/g, '') 
+        .replace(/\\\\/g, '\\');
+
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return decoded;]]></script>
+</dunes-script-module>

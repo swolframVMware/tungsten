@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getMachineByName" result-type="Any" api-version="6.0.0" id="04f7a302-a110-43fc-8f10-ba2b0f629405" version="0.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.api.iaas.machines">
+  <param n="profile" t="string"><![CDATA[]]></param>
+  <param n="name" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA[var response = System.getModule("com.tungsten.vra.api.iaas.machines").getMachines(profile, undefined, "2", "0", undefined, undefined, "name%20eq%20%27" + encodeURIComponent(name) + "%27");
+
+if(response.content.length == 0) {
+    throw "No VM found with name '" + name + "'";
+} else if(response.content.length > 1) {
+    throw "More than one VM found with name '" + name + "'";
+}
+
+return System.getModule("com.tungsten.vra.api.iaas.machines").getMachine(profile, response.content[0].id);]]></script>
+</dunes-script-module>

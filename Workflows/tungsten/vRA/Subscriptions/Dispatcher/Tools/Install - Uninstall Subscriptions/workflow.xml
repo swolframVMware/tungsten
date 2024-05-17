@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:workflow xmlns:ns2="http://vmware.com/vco/workflow" root-name="item1" object-name="workflow:name=generic" id="53531018-7382-4a58-b97a-2eda36a5c749" editor-version="2.0" version="0.0.0" api-version="6.0.0" allowed-operations="vfe" restartMode="1" resumeFromFailedMode="0">
+    <display-name>Install - Uninstall Subscriptions</display-name>
+    <position y="50.0" x="100.0"/>
+    <input>
+        <param name="remove" type="boolean"/>
+        <param name="create" type="boolean"/>
+    </input>
+    <output/>
+    <workflow-item name="item0" type="end" end-mode="0" comparator="0">
+        <in-binding/>
+        <out-binding/>
+        <position y="50.0" x="340.0"/>
+    </workflow-item>
+    <workflow-item name="item1" out-name="item0" type="task" comparator="0">
+        <display-name>Install - Uninstall Subscriptions</display-name>
+        <script encoded="false">"use strict"
+
+var workflowDispatcher = System.getModule("com.tungsten.vro.workflow").getWorkflowByName("tungsten/vRA/Subscriptions/Dispatcher", "Workflow Dispatcher");
+
+var workflowDispatcherDeploymentComplete = System.getModule("com.tungsten.vro.workflow").getWorkflowByName("tungsten/vRA/Subscriptions/Dispatcher", "Workflow Dispatcher - Deployment Complete");
+
+var response = System.getModule("com.tungsten.vra.api.event-broker.topics").getTopics(System.getModule("com.tungsten.system.configuration").getConfigurationProfile("vra"), 0, 10000, null);
+
+var topics = response.content;
+System.log("Topics query returned " + Object.keys(topics).length + " topics." );
+
+for each(var topic in topics) {
+    if(topic.id.indexOf("compute.") == 0) {
+        processTopic(topic, create, remove);
+    } else if(topic.id.indexOf("deployment.") == 0) {
+        processTopic(topic, create, remove);
+    }
+}
+
+if(remove) {
+    System.log("Removing 'Workflow Dispatcher - Deployment Complete' subscription");
+    removeExistingSubscriptions("Workflow Dispatcher - Deployment Complete");
+}
+
+if(create) {
+    System.log("Creating 'Workflow Dispatcher - Deployment Complete' subscription");
+    createSubscription("Workflow Dispatcher - Deployment Complete", "deployment.request.post", workflowDispatcherDeploymentComplete.id, createDispatcherFailureManagerCriteria());
+}
+
+
+/**
+ * 
+ */
+function processTopic(topic, create, remove) {
+    System.log("\tProcessing topic: " + topic.id);
+
+    if(remove) {
+        removeExistingSubscriptions("Workflow Dispatcher - " + topic.id);
+    }
+
+    if(create) {
+        createSubscription("Workflow Dispatcher - " + topic.id, topic.id, workflowDispatcher.id, createDispatcherCriteria(topic.id));
+    }
+}
+
+/**
+ * 
+ */
+function removeExistingSubscriptions(name) {
+    System.log("!!!!!!!!!: " + encodeURIComponent(name));
+    var response = System.getModule("com.tungsten.vra.api.event-broker.subscriptions").getSubscriptions(System.getModule("com.tungsten.system.configuration").getConfigurationProfile("vra"), null, null, null, "(type%20eq%20%27RUNNABLE%27)%20and%20(%27" + encodeURIComponent(name) + "%27%20eq%20name)");
+
+    for each(var subscription in response.content) {
+        System.warn("\t\tRemoving subscription: '" + subscription.name + "', id: " + subscription.id);
+        System.getModule("com.tungsten.vra.api.event-broker.subscriptions").deleteSubscription(System.getModule("com.tungsten.system.configuration").getConfigurationProfile("vra"), subscription.id);
+    }
+}
+
+/**
+ * 
+ */
+function createSubscription(name, topicId, workflowId, criteria) {
+    var id = "sub_" + System.getCurrentTime();
+
+    System.getModule("com.tungsten.vra.api.event-broker.subscriptions").createSubscription(System.getModule("com.tungsten.system.configuration").getConfigurationProfile("vra"), "RUNNABLE", name, "Auto created by the workflow dispatcher system.", false, topicId, true, false, criteria, "extensibility.vro", workflowId, 0, 0, null, null, null, id);
+
+    System.log("\t\tCreated subscription '" + "Workflow Dispatcher - " + topic.id + ", id: " + id)
+}
+
+/**
+ * 
+ */
+function createDispatcherCriteria(topicId) {
+    switch (topicId.split(".")[0]) {
+        case "compute":
+            return "" +
+                "event.data.customProperties != undefined &amp;&amp;\n" +
+                "event.data.customProperties.workflowDispatcher != undefined &amp;&amp;\n" +
+                "JSON.parse(event.data.customProperties.workflowDispatcher).workflows['" + topicId + "'] != undefined";
+            break;
+        case "deployment":
+            return "" +
+                "event.data.requestInputs.workflowDispatcher != undefined &amp;&amp;\n" + 
+                "JSON.parse(event.data.requestInputs.workflowDispatcher).workflows['" + topicId + "'] != undefined";
+            break;
+        default:
+            throw "Unsupported event topic type: " + eventTopicId;
+    }
+}
+
+/**
+ * 
+ */
+function createDispatcherFailureManagerCriteria() {
+    return "" +
+        "event.data.requestInputs.workflowDispatcher != undefined &amp;&amp;\n" + 
+        "JSON.parse(event.data.requestInputs.workflowDispatcher).destroyDeploymentOnFailure != undefined &amp;&amp;\n" +
+        "JSON.parse(event.data.requestInputs.workflowDispatcher).destroyDeploymentOnFailure = true";
+}</script>
+        <in-binding>
+            <bind name="create" type="boolean" export-name="create"/>
+            <bind name="remove" type="boolean" export-name="remove"/>
+            <bind name="criteriaCompute" type="string"/>
+            <bind name="criteriaDeployment" type="string"/>
+        </in-binding>
+        <out-binding/>
+        <description>Simple task with custom script capability.</description>
+        <position y="60.0" x="180.0"/>
+    </workflow-item>
+</ns2:workflow>

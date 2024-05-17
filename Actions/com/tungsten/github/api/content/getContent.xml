@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getContent" result-type="Any" api-version="6.0.0" id="98c07e14-04ed-4013-88e7-9582fbf6711c" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.github.api.content">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <param n="organization" t="string"><![CDATA[]]></param>
+  <param n="project" t="string"><![CDATA[]]></param>
+  <param n="branch" t="string"><![CDATA[]]></param>
+  <param n="path" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+ 
+var configuration = System.getModule("com.tungsten.github.impl.configuration").getEnvironmentHostImpl(environment);
+ 
+var restHost = System.getModule("com.tungsten.github.impl.rest").getRestHostImpl(configuration.url, configuration.importCertificate);
+
+var response = System.getModule("com.tungsten.github.impl.rest.content").getContentImpl(restHost, configuration.token, organization, project, branch, path);
+
+var content = JSON.parse(response.contentAsString);
+
+System.debug("response = " + JSON.stringify(content));
+
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return content;]]></script>
+</dunes-script-module>

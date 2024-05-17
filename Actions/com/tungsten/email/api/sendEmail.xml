@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="sendEmail" result-type="string" api-version="6.0.0" id="1ed46383-c477-4e1e-b997-bd9640b653d0" version="0.0.0" allowed-operations="vfe" category-name="com.tungsten.email.api">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <param n="fromName" t="string"><![CDATA[]]></param>
+  <param n="fromAddress" t="string"><![CDATA[]]></param>
+  <param n="toAddress" t="string"><![CDATA[]]></param>
+  <param n="subject" t="string"><![CDATA[]]></param>
+  <param n="content" t="string"><![CDATA[]]></param>
+  <param n="contentType" t="string"><![CDATA[]]></param>
+  <param n="attachments" t="Array/MimeAttachment"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+ 
+var smtpConfiguration = System.getModule("com.tungsten.email.impl.configuration").getEnvironmentHostConfigurationImpl(environment, "smtp");
+
+System.getModule("com.tungsten.email.impl").sendEmailImpl(smtpConfiguration.host, smtpConfiguration.port, smtpConfiguration.username, smtpConfiguration.password, smtpConfiguration.sslType, smtpConfiguration.useSSL, smtpConfiguration.useStartTLS, fromName, fromAddress, toAddress, subject, content, contentType, attachments);
+
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return;
+
+/**
+ * 
+ */
+function getValue(value) {
+    if(value == undefined || value == null || new String(value).length == 0) {
+        return null;
+    }
+}]]></script>
+</dunes-script-module>

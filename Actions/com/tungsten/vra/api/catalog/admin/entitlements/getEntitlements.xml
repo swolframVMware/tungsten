@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getEntitlements" result-type="Any" api-version="6.0.0" id="6f6351ba-0c39-4a66-9255-7b8afc57c350" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.api.catalog.admin.entitlements">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <param n="projectId" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var response = System.getModule("com.tungsten.vra.plugin.rest.catalog.admin.entitlements").getEntitlementsImpl(System.getModule("com.tungsten.vra.plugin.rest").getVRAHostImpl(environment), projectId);
+
+System.debug("Get entitlements response = " + JSON.stringify(response));
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return response;]]></script>
+</dunes-script-module>

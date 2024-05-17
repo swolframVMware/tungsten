@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="sendEmailFromTemplate" result-type="string" api-version="6.0.0" id="1517dcc5-62fe-427c-8169-88faa322ac97" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.email.api">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <param n="service" t="string"><![CDATA[]]></param>
+  <param n="template" t="string"><![CDATA[]]></param>
+  <param n="values" t="Properties"><![CDATA[]]></param>
+  <param n="fromName" t="string"><![CDATA[]]></param>
+  <param n="fromAddress" t="string"><![CDATA[]]></param>
+  <param n="toAddress" t="string"><![CDATA[]]></param>
+  <param n="attachments" t="Array/MimeAttachment"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+ 
+var template = System.getModule("com.tungsten.email.impl.template").getEmailTemplateImpl(service, template);
+
+System.getModule("com.tungsten.email.api").sendEmail(environment, fromName, fromAddress, toAddress, replaceValues(template.subject, values), replaceValues(template.content, values), template.contentType, attachments);
+
+/**
+ * 
+ */
+function replaceValues(template, values) {
+    var content = template;
+
+    for each(key in values.keys) {
+        var value = values[key];
+        if(value instanceof Properties) {
+            value = buildHtmlTableFromProperties(value);
+        }
+
+        content = content.replace(new RegExp("\\[" + key + "\\]", "g"), value);
+    }
+
+    return content;
+}
+
+/**
+ * 
+ */
+function buildHtmlTableFromProperties(properties) {
+    var tableHtml = '<table style="padding:3px">';
+
+    for each(var key in properties.keys) {
+        tableHtml += "<tr>";
+        tableHtml += "<td>";
+        tableHtml += '<div class="fieldlabel">' + key + '</div>';
+        tableHtml += "</td>";
+        tableHtml += "<td>";
+        tableHtml += properties[key];
+        tableHtml += "</td>";
+        tableHtml += "</tr>";
+    }
+
+    tableHtml += "</table>";
+
+    return tableHtml;
+}]]></script>
+</dunes-script-module>

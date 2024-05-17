@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="ansibletowerCreateWorkflowUILink" result-type="Any" api-version="6.0.0" id="754eb2b8-318d-48ae-99e7-17b242870270" version="1.0.3" allowed-operations="vfe" category-name="com.tungsten.ansibletower.api.workflow_jobs">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <param n="jobId" t="string"><![CDATA[Path to job]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+ 
+var configuration = System.getModule("com.tungsten.ansibletower.impl.configuration").getEnvironmentConfigurationImpl(environment, "host");
+ 
+var link = configuration.url.replace(new RegExp("/api/v[0-9]"),"/#/workflows/" + jobId); 
+
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return link;]]></script>
+</dunes-script-module>

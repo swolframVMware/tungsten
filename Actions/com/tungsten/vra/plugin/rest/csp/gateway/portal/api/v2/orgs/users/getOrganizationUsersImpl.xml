@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getOrganizationUsersImpl" result-type="Any" api-version="6.0.0" id="1ec488ed-f486-43ae-8e9e-b7be3844ccb0" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.plugin.rest.csp.gateway.portal.api.v2.orgs.users">
+  <param n="vraHost" t="VRA:Host"><![CDATA[]]></param>
+  <param n="organizationId" t="string"><![CDATA[]]></param>
+  <param n="pageStart" t="string"><![CDATA[]]></param>
+  <param n="pageLimit" t="string"><![CDATA[]]></param>
+  <param n="expandProfile" t="string"><![CDATA[]]></param>
+  <param n="includeGroupIdsInRoles" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var urlParameters = System.getModule("com.tungsten.vra.plugin.rest").createUrlParametersImpl(new Properties({pageStart: pageStart, pageLimit: pageLimit, expandProfile: expandProfile, includeGroupIdsInRoles: includeGroupIdsInRoles}));
+ 
+var response = System.getModule("com.tungsten.vra.plugin.rest").executeRequestImpl(vraHost, "/csp/gateway/portal/api/v2/orgs/" + organizationId + "/users" + urlParameters, "GET", null);
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return response;]]></script>
+</dunes-script-module>

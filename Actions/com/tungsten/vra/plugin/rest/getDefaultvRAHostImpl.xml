@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getDefaultvRAHostImpl" result-type="null" api-version="6.0.0" id="230802cd-34c9-4372-bd51-8dec98e62293" version="0.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.plugin.rest">
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+ 
+var vraHost =  System.getModule("com.tungsten.vra.plugin.rest").getVRAHostImpl("Default");
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return vraHost;]]></script>
+</dunes-script-module>

@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="convertConfigurationElementToProperties" result-type="Properties" api-version="6.0.0" id="97a409f1-7cd0-47c2-ac5f-1058a42d2d94" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vro.configuration">
+  <param n="configurationElement" t="ConfigurationElement"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+ 
+var value = new Properties();
+for each(var attribute in configurationElement.attributes) {
+    value.put(attribute.name, attribute.value);
+}
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return value;]]></script>
+</dunes-script-module>

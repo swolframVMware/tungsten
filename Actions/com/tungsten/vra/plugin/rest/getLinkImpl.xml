@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getLinkImpl" result-type="Any" api-version="6.0.0" id="78a1ea56-d29d-4dc0-ad88-9baebe16823e" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.plugin.rest">
+  <param n="vraHost" t="VRA:Host"><![CDATA[]]></param>
+  <param n="link" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+ 
+var response = System.getModule("com.tungsten.vra.plugin.rest").executeRequestImpl(vraHost, link, "GET", null)
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return response;]]></script>
+</dunes-script-module>

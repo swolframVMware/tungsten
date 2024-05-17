@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getImageProfiles" result-type="Any" api-version="6.0.0" id="286b137f-3748-46cb-a455-28001406a410" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.api.iaas.image-profiles">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var response = System.getModule("com.tungsten.vra.plugin.rest.iaas.image-profiles").getImageProfilesImpl(System.getModule("com.tungsten.vra.plugin.rest").getVRAHostImpl(environment));
+
+System.debug("Image-Porifles = " + JSON.stringify(response));
+ 
+eval(System.getModule("com.wellsfargo.v2.vro.debug.logging").endActionSnippet());
+return response;]]></script>
+</dunes-script-module>

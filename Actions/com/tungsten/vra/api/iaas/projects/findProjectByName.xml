@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="findProjectByName" result-type="Any" api-version="6.0.0" id="f4b49e4d-f3aa-4e86-87f0-1fc5e1c92f6e" version="0.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.api.iaas.projects">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <param n="name" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var lastPage;
+var skip = 0;
+var top = 100;
+var filter = "tolower(name)+eq+'" + name.toLowerCase() + "'";
+
+var response = System.getModule("com.tungsten.vra.api.iaas.projects").getProjects(environment, top, skip, null, filter);
+
+if(response.totalElements != 1) {
+    throw "'" + response.totalElements + "' projects found matching name '" + name.toLowerCase() + "'. Expecting exactly 1.";
+}
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return response.content[0];]]></script>
+</dunes-script-module>

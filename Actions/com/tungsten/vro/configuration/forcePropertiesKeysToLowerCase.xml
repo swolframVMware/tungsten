@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="forcePropertiesKeysToLowerCase" result-type="Properties" api-version="6.0.0" id="4b0b06e0-c20b-4361-8301-e1c16f3fa095" version="0.0.0" allowed-operations="vfe" category-name="com.tungsten.vro.configuration">
+  <param n="inProperties" t="Properties"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var outProperties = new Properties(); 
+for each (var key in inProperties.keys) {
+    if(outProperties.get(key.toLowerCase())) {
+        throw "Duplicate name key found while trying to force properties keys to lower case: " + JSON.stringify(inProperties);
+    }
+    outProperties.put(key.toLowerCase(), inProperties[key]);
+}
+
+return outProperties;
+
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return configuration;]]></script>
+</dunes-script-module>

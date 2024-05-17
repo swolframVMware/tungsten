@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="executeRestOperation" result-type="Any" api-version="6.0.0" id="813c88ff-61a3-435c-a4c9-28357d2530fe" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.rest">
+  <param n="restHost" t="REST:RESTHost"><![CDATA[]]></param>
+  <param n="verb" t="string"><![CDATA[]]></param>
+  <param n="headers" t="string"><![CDATA[]]></param>
+  <param n="apiUrl" t="string"><![CDATA[]]></param>
+  <param n="body" t="string"><![CDATA[]]></param>
+  <param n="validate" t="boolean"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet(["headers.BoKs2FAAuthHASH", "headers.authorization", "headers.Authorization", "body"]));
+ 
+//create request object
+var url = encodeURIComponent(apiUrl);
+
+var request = restHost.createRequest(verb, apiUrl, body);
+System.debug("Executing REST call: '" + restHost.url + "/" + apiUrl + "'");
+
+for each(var key in headers.keys) {
+    if(key.toLocaleLowerCase().equals("content-type")) {
+        request.contentType = headers.get(key);
+    } else {
+        request.setHeader(key, headers.get(key));
+    }
+}
+
+var response = request.execute();
+System.debug("Response status code: " + response.statusCode);
+if(validate) {
+    if(response.statusCode < 200 || response.statusCode > 299) {
+        System.debug("Response Content: " + response.contentAsString);
+        throw("Invalid response code " + response.statusCode + ", see debug logs");
+    }
+}
+
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return response;]]></script>
+</dunes-script-module>

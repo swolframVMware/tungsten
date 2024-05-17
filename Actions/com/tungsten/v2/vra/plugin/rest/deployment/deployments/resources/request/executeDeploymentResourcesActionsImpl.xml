@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="executeDeploymentResourcesActionsImpl" result-type="Any" api-version="6.0.0" id="5a59aad0-09ba-49d3-ad8f-bf95f466a36b" version="1.0.0" allowed-operations="vfe" category-name="com.wellsfargo.v2.vra.plugin.rest.deployment.deployments.resources.request">
+  <param n="vraHost" t="VRA:Host"><![CDATA[]]></param>
+  <param n="resourceId" t="string"><![CDATA[]]></param>
+  <param n="actionId" t="string"><![CDATA[]]></param>
+  <param n="reason" t="string"><![CDATA[]]></param>
+  <param n="inputs" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var data = {
+  "actionId": actionId,
+  "reason": reason,
+  "inputs": JSON.parse(inputs)
+}
+ 
+var request = System.getModule("com.tungsten.vra.plugin.rest").executeRequestImpl(vraHost, "/deployment/api/resources/" + resourceId + "/requests", "POST", JSON.stringify(data));
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return request;]]></script>
+</dunes-script-module>

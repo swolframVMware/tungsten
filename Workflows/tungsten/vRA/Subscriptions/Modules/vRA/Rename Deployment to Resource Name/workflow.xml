@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="c42369bc-4a8a-40fc-a280-6746dacfe411" version="0.0.0" api-version="6.0.0" allowed-operations="vfe" editor-version="2.0" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Rename Deployment to Resource Name]]></display-name>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="inputProperties" type="Properties"/>
+    <param name="__tokenName" type="string"/>
+  </input>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <in-binding/>
+    <position y="50.0" x="340.0"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item0" type="task">
+    <display-name><![CDATA[Rename Deployment to First Resource Name]]></display-name>
+    <script encoded="false"><![CDATA["use strict"
+var renameRequired = true;
+var customProperties = inputProperties.customProperties;
+if (customProperties.deploymentMatchResourceName && customProperties.deploymentMatchResourceName.toLowerCase() == 'false'){
+    renameRequired = false;
+}
+
+if (!renameRequired){
+    System.log("Skipping the rename of deployment due to property [deploymentMatchResourceName=false]");
+}else{
+    var deployment = System.getModule("com.tungsten.vra.api.deployment.deployments").getDeployment(System.getModule("com.tungsten.system.configuration").getConfigurationProfile("vra"), inputProperties.deploymentId);
+
+    System.log("Renaming deployment '" + deployment.name + "' to '" + inputProperties.resourceNames[0] + "'");
+
+    var deployment = System.getModule("com.tungsten.vra.api.deployment.deployments").updateDeployment(System.getModule("com.tungsten.system.configuration").getConfigurationProfile("vra"), inputProperties.deploymentId, null, null, inputProperties.resourceNames[0]);
+}]]></script>
+    <in-binding>
+      <bind name="inputProperties" type="Properties" export-name="inputProperties"/>
+    </in-binding>
+    <out-binding/>
+    <description><![CDATA[Simple task with custom script capability.]]></description>
+    <position y="60.0" x="180.0"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="inputProperties">
+      <desc><![CDATA[inputProperties]]></desc>
+    </p-param>
+    <p-param name="__tokenName">
+      <desc><![CDATA[__tokenName]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

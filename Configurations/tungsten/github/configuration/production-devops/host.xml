@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<config-element id="a53cccef-dfed-4752-aa54-a8e36e04eca9" version="0.0.0" allowed-operations="vfe">
+  <display-name><![CDATA[host]]></display-name>
+  <atts>
+    <att name="url" type="string" read-only="false">
+      <value encoded="n"><![CDATA[https://github.tungsten.com]]></value>
+    </att>
+    <att name="token" type="SecureString" read-only="false">
+      <value encoded="n"><![CDATA[__NULL__]]></value>
+    </att>
+    <att name="importCertificate" type="boolean" read-only="false">
+      <value encoded="n"><![CDATA[true]]></value>
+    </att>
+  </atts>
+</config-element>

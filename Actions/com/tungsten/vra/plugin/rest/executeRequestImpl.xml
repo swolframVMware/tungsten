@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="executeRequestImpl" result-type="Any" api-version="6.0.0" id="7598f85e-45bf-48f8-bded-6d1aa277b71c" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.plugin.rest">
+  <param n="vraHost" t="VRA:Host"><![CDATA[]]></param>
+  <param n="uri" t="string"><![CDATA[]]></param>
+  <param n="method" t="string"><![CDATA[]]></param>
+  <param n="data" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var vraRestClient = vraHost.createRestClient();
+
+var vraRestRequest = vraRestClient.createRequest(
+    method,
+    uri,
+    data
+);
+
+var response = vraRestClient.execute(vraRestRequest);
+ 
+System.debug("Response status code: " + response.statusCode);
+if(response.statusCode < 200 || response.statusCode > 299) {
+    System.debug("Response Content: " + response.contentAsString);
+    throw("Invalid response code " + response.statusCode + ", see debug logs");
+}
+ 
+var ret;
+if(response.contentAsString != "") {
+    ret = JSON.parse(response.contentAsString)
+} else {
+    ret = null;
+}
+
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return ret;]]></script>
+</dunes-script-module>

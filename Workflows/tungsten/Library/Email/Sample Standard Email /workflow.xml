@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="9ed845a9-df59-45d0-b072-1e11704fc28a" version="0.0.0" api-version="6.0.0" allowed-operations="vfe" editor-version="2.0" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Sample Standard Email ]]></display-name>
+  <error-handler name="item3" throw-bind-name="exception">
+    <position y="140.0" x="100.0"/>
+  </error-handler>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="emailAddress" type="string"/>
+  </input>
+  <attrib name="exception" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <in-binding/>
+    <position y="50.0" x="340.0"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item0" throw-bind-name="exception" type="task">
+    <display-name><![CDATA[Send Sample Standard email]]></display-name>
+    <script encoded="false"><![CDATA["use strict"
+
+var addresses = System.getModule("com.tungsten.email.api.configuration").getEnvironmentAddressConfiguration(System.getModule("com.tungsten.system.configuration").getConfigurationProfile("emailaddresses"));
+
+var table = new Properties(
+    {
+        key1: "value1",
+        key2: "value2",
+        key3: "value3",
+        key4: "value4"
+    }
+);
+
+
+System.getModule("com.tungsten.email.api").sendEmailFromTemplate(System.getModule("com.tungsten.system.configuration").getConfigurationProfile("emailhost"), "email", "standard table", new Properties({table_title: "this is the table title", title: "this is title", subject: "this is the subject", description: "here is the description", table_header: "table header", table: table, vraURL: System.getModule("com.tungsten.vra.api").getVRAUrl(System.getModule("com.tungsten.system.configuration").getConfigurationProfile("vra"))}), addresses.fromName, addresses.fromAddress, emailAddress);
+]]></script>
+    <in-binding>
+      <bind name="emailAddress" type="string" export-name="emailAddress"/>
+    </in-binding>
+    <out-binding/>
+    <description><![CDATA[Simple task with custom script capability.]]></description>
+    <position y="60.0" x="180.0"/>
+  </workflow-item>
+  <workflow-item name="item2" type="end" end-mode="0">
+    <in-binding/>
+    <position y="140.0" x="340.0"/>
+  </workflow-item>
+  <workflow-item name="item3" out-name="item2" type="task">
+    <display-name><![CDATA[Handle Error]]></display-name>
+    <script encoded="false"><![CDATA[System.error("Error while sending email: " + exception);]]></script>
+    <in-binding>
+      <bind name="exception" type="string" export-name="exception"/>
+    </in-binding>
+    <out-binding/>
+    <description><![CDATA[Simple task with custom script capability.]]></description>
+    <position y="150.0" x="180.0"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="emailAddress">
+      <desc><![CDATA[emailAddress]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

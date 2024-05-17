@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getImageProfilesImpl" result-type="Any" api-version="6.0.0" id="edb376f2-6946-4466-823b-09ea2211e4e7" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.plugin.rest.iaas.image-profiles">
+  <param n="vraHost" t="VRA:Host"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+ 
+var response = System.getModule("com.tungsten.vra.plugin.rest").executeRequestImpl(vraHost, "/iaas/api/image-profiles", "GET", null);
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return response;]]></script>
+</dunes-script-module>

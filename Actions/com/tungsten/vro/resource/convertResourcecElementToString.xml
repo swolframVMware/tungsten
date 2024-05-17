@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="convertResourcecElementToString" result-type="string" api-version="6.0.0" id="5550c4e0-5928-4f7b-b01f-73639cada1ef" version="0.0.0" allowed-operations="vfe" category-name="com.tungsten.vro.resource">
+  <param n="resourceElement" t="ResourceElement"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var content = resourceElement.getContentAsMimeAttachment().content;
+
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return content;]]></script>
+</dunes-script-module>

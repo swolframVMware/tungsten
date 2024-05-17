@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getCompute" result-type="Any" api-version="6.0.0" id="f5da1213-3b5e-452a-bd3c-4dde5493b247" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.api.provisioning.uerp.resouces.compute">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <param n="resourceId" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var response = System.getModule("com.tungsten.vra.plugin.rest.provisioning.uerp.resouces.compute").getComputeImpl(System.getModule("com.tungsten.vra.plugin.rest").getVRAHostImpl(environment), resourceId);
+
+System.debug("Get Compute with id '" + resourceId + "' = " + JSON.stringify(response));
+
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return response;]]></script>
+</dunes-script-module>

@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getConfigurationElement" result-type="string" api-version="6.0.0" id="3279feb0-f395-4f95-8970-160e073ab102" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vro.configuration">
+  <param n="completePath" t="string"><![CDATA[]]></param>
+  <param n="name" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+ 
+var configurationElementCategory = Server.getConfigurationElementCategoryWithPath(completePath);
+if(configurationElementCategory == undefined || configurationElementCategory == null) {
+    throw "Could not get configuration category '" + completePath + "'";
+}
+ 
+var configurationElement;
+ 
+for each (var configurationElement in configurationElementCategory.allConfigurationElements) {
+    if(configurationElement.name.toLowerCase().equals(name.toLowerCase())) {
+        break;
+    }
+}
+ 
+if(configurationElement == null) {
+    throw "Could not find '" + name + "' in '" + completePath + "'";
+}
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return configurationElement;]]></script>
+</dunes-script-module>

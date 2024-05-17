@@ -1,0 +1,146 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="f292ecb3-c91d-4e32-9637-60536a8f3be5" version="0.0.0" api-version="6.0.0" allowed-operations="vfe" editor-version="2.0" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Repave]]></display-name>
+  <position y="50.0" x="100.0"/>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <in-binding/>
+    <position y="50.0" x="340.0"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item0" type="task">
+    <display-name><![CDATA[Repave]]></display-name>
+    <script encoded="false"><![CDATA[//Get variables
+var resourceId = System.getContext().getParameter("__metadata_resourceProperties").resourceId;
+var deploymentId = System.getContext().getParameter("__metadata_deploymentId");
+var blueprintId = System.getContext().getParameter("__metadata_resourceProperties")["__blueprint_id"];
+var blueprintResourceName = System.getContext().getParameter("__metadata_resourceProperties")["__blueprint_resource_name"];
+
+
+
+//Update Image
+updateImageReference(
+    deploymentId, 
+    resourceId
+);
+
+updateWorkflowDispatcherFromBlueprint(
+    deploymentId, 
+    resourceId,
+    blueprintId,
+    blueprintResourceName
+)
+//Execute
+waitForRequestToComplete(
+   executeRebuildAction(resourceId)
+);
+
+/**
+ * 
+ */
+function updateImageReference(deploymentId, resourceId) {
+    var compute = System.getModule("com.tungsten.vra.api.provisioning.uerp.resouces.compute").getCompute(System.getModule("com.tungsten.system.configuration").getConfigurationProfile("vra"), resourceId);
+
+
+    var imageInfo = getImageLatestImageInfo(deploymentId, resourceId);
+    var image = System.getModule("com.tungsten.vra.api").getLink(System.getModule("com.tungsten.system.configuration").getConfigurationProfile("vra"), "/provisioning/uerp/" + imageInfo.imageRef);
+
+
+    System.getModule("com.tungsten.vra.api.provisioning.uerp.resouces.compute").updateCompute(System.getModule("com.tungsten.system.configuration").getConfigurationProfile("vra"), resourceId, JSON.parse('{' + '"customProperties": {' + '"__imageRef": "' + image.customProperties["__resolvedImageLink"] + '",' + '"__resolvedImageLink": "' + imageInfo.imageRef + '",' + '"__imageMappingLink": "/provisioning/resources/image-profiles-v2/' + imageInfo.imageProfileId + '",' + '"__vmw:provisioning:imageMapping": "' + imageInfo.imageProfileId + '",' + '"__imageOsFamily": "' + imageInfo.osFamily + '"' + '}' + '}'));
+
+    System.log("Updated resourceId = '" + resourceId + "' with image reference = '" + compute.customProperties["__imageRef"] + "'");
+}
+
+/**
+ * 
+ */
+function updateWorkflowDispatcherFromBlueprint(deploymentId, resourceId, blueprintId, blueprintResourceName) {
+    var blueprint = System.getModule("com.tungsten.vra.api.blueprint.blueprints").getBlueprint(System.getModule("com.tungsten.system.configuration").getConfigurationProfile("vra"), blueprintId);
+
+    var blueprintContent = System.getModule("com.tungsten.yaml.json").convertYamlToJson(blueprint.content);
+
+    var workflowDispatcher = blueprintContent["resources"][blueprintResourceName]["properties"]["workflowDispatcher"];
+
+    var compute = new Properties();
+    compute.customProperties = new Properties();
+    compute.customProperties.workflowDispatcher = workflowDispatcher;
+
+    System.getModule("com.tungsten.vra.api.provisioning.uerp.resouces.compute").updateCompute(System.getModule("com.tungsten.system.configuration").getConfigurationProfile("vra"), resourceId, compute);
+
+    System.log("Updated resourceId = '" + resourceId + "' with workflowDispatcher = " + workflowDispatcher);
+}
+
+
+/**
+ * 
+ */
+function executeRebuildAction(resourceId) {
+    var request = System.getModule("com.tungsten.vra.api.deployment.deployments.resources.requests").executeDeploymentResourcesAction(System.getModule("com.tungsten.system.configuration").getConfigurationProfile("vra"), resourceId, "Cloud.vSphere.Machine.Rebuild", "Executed via Repave wrapper", "{}");
+
+    return request.id;
+}
+
+/**
+ * 
+ */
+function waitForRequestToComplete(requestId) {
+    var request = null;
+
+    do {
+        System.log("Waiting 10 seconds to check on request status...");
+        System.sleep(10000);
+        
+        request = System.getModule("com.tungsten.vra.api.deployment.requests").getRequest(System.getModule("com.tungsten.system.configuration").getConfigurationProfile("vra"), requestId);
+
+        System.log("Request status is '" + request.status + "'")
+    
+    } while(request.status == "INPROGRESS");
+
+    System.log("Request complete, stopped waiting...")
+
+    return request;
+}
+
+/**
+ * 
+ */
+function getImageLatestImageInfo(deploymentId, resourceId) {
+    var resource = System.getModule("com.tungsten.vra.api.deployment.deployments.resources").getDeploymentResource("Default", deploymentId, resourceId);
+
+
+    if(resource.properties.image == undefined || resource.properties.image == null) {
+        throw "vRA resource does not have an image property";
+    }
+
+    var imageProfiles = System.getModule("com.tungsten.vra.api.iaas.image-profiles").getImageProfiles("Default").content;
+
+    var imageRef = null;
+    var imageProfile = null;
+    var osFamily = null;
+    for each (imageProfile in imageProfiles) {
+
+        if(imageProfile.cloudAccountId == resource.properties.endpointId && imageProfile.externalRegionId == resource.properties.datacenter) {
+            if(imageProfile.imageMappings.mapping[resource.properties.image] != undefined && imageProfile.imageMappings.mapping[resource.properties.image] != null) {
+                imageRef = "/resources/images/" + imageProfile.imageMappings.mapping[resource.properties.image].id
+                osFamily = imageProfile.imageMappings.mapping[resource.properties.image].osFamily
+            }
+        }
+    }
+
+    if(imageRef == null) {
+        throw "No image found with the cloud account id '" + resource.properties.endpointId + "', externalRegionId = '" + resource.properties.datacenter + "' named = '" + resource.properties.image + "'";
+    }
+
+    return {
+        imageProfileId: imageProfile.id,
+        imageRef: imageRef,
+        imageosFamily: osFamily
+    }
+}
+
+]]></script>
+    <in-binding/>
+    <out-binding/>
+    <description><![CDATA[Simple task with custom script capability.]]></description>
+    <position y="60.0" x="180.0"/>
+  </workflow-item>
+  <presentation/>
+</workflow>

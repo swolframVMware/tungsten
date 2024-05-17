@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<config-element id="fd7d80ca-ce8a-4526-9731-b9afdb083e4f" version="0.0.0" allowed-operations="vfe">
+  <display-name><![CDATA[smtp]]></display-name>
+  <atts>
+    <att name="host" type="string" read-only="false">
+      <value encoded="n"><![CDATA[spo.tungsten.com]]></value>
+    </att>
+    <att name="port" type="number" read-only="false">
+      <value encoded="n"><![CDATA[25.0]]></value>
+    </att>
+    <att name="username" type="string" read-only="false">
+      <value encoded="n"><![CDATA[]]></value>
+    </att>
+    <att name="password" type="SecureString" read-only="false">
+      <value encoded="n"><![CDATA[__NULL__]]></value>
+    </att>
+    <att name="sslType" type="string" read-only="false">
+      <value encoded="n"><![CDATA[TLSv1.2]]></value>
+    </att>
+    <att name="useSSL" type="boolean" read-only="false">
+      <value encoded="n"><![CDATA[false]]></value>
+    </att>
+    <att name="useStartTLS" type="boolean" read-only="false">
+      <value encoded="n"><![CDATA[false]]></value>
+    </att>
+  </atts>
+</config-element>

@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getEnvironmentHostConfigurationImpl" result-type="Properties" api-version="6.0.0" id="ab4c6342-a20c-4b81-ba6b-79baa7b86fac" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.email.impl.configuration">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <param n="name" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+ 
+var configuration = System.getModule("com.tungsten.vro.configuration").convertConfigurationElementToProperties(System.getModule("com.tungsten.vro.configuration").getConfigurationElementInBase("email/configuration/host/" + environment, name))
+
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return configuration;]]></script>
+</dunes-script-module>

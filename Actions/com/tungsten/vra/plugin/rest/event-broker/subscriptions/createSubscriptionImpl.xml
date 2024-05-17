@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="createSubscriptionImpl" result-type="void" api-version="6.0.0" id="18c5fcab-3584-4c7a-8b75-6ff6266e9caf" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.plugin.rest.event-broker.subscriptions">
+  <param n="vraHost" t="VRA:Host"><![CDATA[]]></param>
+  <param n="type" t="string"><![CDATA[]]></param>
+  <param n="name" t="string"><![CDATA[]]></param>
+  <param n="description" t="string"><![CDATA[]]></param>
+  <param n="disabled" t="boolean"><![CDATA[]]></param>
+  <param n="eventTopicId" t="string"><![CDATA[]]></param>
+  <param n="blocking" t="string"><![CDATA[]]></param>
+  <param n="contextual" t="boolean"><![CDATA[]]></param>
+  <param n="criteria" t="string"><![CDATA[]]></param>
+  <param n="runnableType" t="string"><![CDATA[]]></param>
+  <param n="runnableId" t="string"><![CDATA[]]></param>
+  <param n="timeout" t="number"><![CDATA[]]></param>
+  <param n="priority" t="number"><![CDATA[]]></param>
+  <param n="recoverRunnableType" t="string"><![CDATA[]]></param>
+  <param n="recoverRunnableId" t="string"><![CDATA[]]></param>
+  <param n="projectId" t="string"><![CDATA[]]></param>
+  <param n="id" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var data = {
+    "id": id,
+    "type": type,
+    "name": name,
+    "description": description,
+    "disabled": disabled,
+    "eventTopicId": eventTopicId,
+    "blocking": blocking,
+    "contextual": contextual,
+    "criteria": criteria,
+    "runnableType": runnableType,
+    "runnableId": runnableId,
+    "timeout": timeout,
+    "priority": priority,
+    "recoverRunnableType": recoverRunnableType,
+    "recoverRunnableId": recoverRunnableId,
+    "constraints": {
+        "projectId": projectId
+    }
+};
+ 
+System.getModule("com.tungsten.vra.plugin.rest").executeRequestImpl(vraHost, "/event-broker/api/subscriptions", "POST", JSON.stringify(data));
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return;]]></script>
+</dunes-script-module>

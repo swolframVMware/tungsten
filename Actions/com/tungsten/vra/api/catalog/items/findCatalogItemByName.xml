@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="findCatalogItemByName" result-type="Any" api-version="6.0.0" id="fa5b8363-53cd-4a76-93a8-62d2658916c7" version="0.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.api.catalog.items">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <param n="name" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var lastPage;
+var skip = 0;
+var top = 100;
+var item = null;
+var found = false;
+
+do {
+    var response = System.getModule("com.tungsten.vra.api.catalog.items").getCatalogItems(environment, skip, null, top, false, name);
+
+    var items = response.content;
+    for each(item in items) {
+        if(item.name.toLowerCase() == name.toLowerCase()) {
+            System.debug("Found catalog item: " + JSON.stringify(item));
+            found = true;
+            break;
+        }
+    }
+
+    skip += top;
+
+    lastPage = response.last;
+} while(lastPage == false && found == false)
+
+if(found == false) {
+    throw "No catalog item found with the name '" + name + "'";
+}
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return item;]]></script>
+</dunes-script-module>

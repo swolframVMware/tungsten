@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="71612025-697c-4a80-ae03-511b440394ab" version="0.0.0" api-version="6.0.0" allowed-operations="vfe" editor-version="2.0" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Disable 2nd NIC on VM]]></display-name>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="inputProperties" type="Properties"/>
+    <param name="__tokenName" type="string"/>
+  </input>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <in-binding/>
+    <position y="50.0" x="340.0"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item0" type="task">
+    <display-name><![CDATA[Disable 2nd NIC on VM]]></display-name>
+    <script encoded="false"><![CDATA["use strict"
+if (inputProperties.customProperties.secondary_nic_enabled == "true"){
+    var virtualMachine = System.getModule("com.vmware.pso.wellsfargo").findVcVmByUuid(
+        inputProperties.externalIds[0], //vmUuid
+        inputProperties.customProperties.vcUuid //vcUuid
+    );
+
+    System.getModule("com.tungsten.vcenter.vm.devices.network").setVmNetworkInterfaceConnected(virtualMachine, "Network adapter 2", false, false);
+}  
+]]></script>
+    <in-binding>
+      <bind name="inputProperties" type="Properties" export-name="inputProperties"/>
+    </in-binding>
+    <out-binding/>
+    <description><![CDATA[Simple task with custom script capability.]]></description>
+    <position y="60.0" x="180.0"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="inputProperties">
+      <desc><![CDATA[inputProperties]]></desc>
+    </p-param>
+    <p-param name="__tokenName">
+      <desc><![CDATA[__tokenName]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

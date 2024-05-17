@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="setVmNetworkInterfaceConnected" result-type="string" api-version="6.0.0" id="737d98bd-01cb-468c-81ae-ef8f860f593e" version="0.0.0" allowed-operations="vfe" category-name="com.tungsten.vcenter.vm.devices.network">
+  <param n="virtualMachine" t="VC:VirtualMachine"><![CDATA[]]></param>
+  <param n="label" t="string"><![CDATA[]]></param>
+  <param n="connected" t="boolean"><![CDATA[]]></param>
+  <param n="startConnected" t="boolean"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA[System.log("Inspecting devices on vm '" + virtualMachine.name + "'");
+
+for each (var vcVirtualDevice in virtualMachine.config.hardware.device) {
+    System.debug("Inspecting network interface: '" + vcVirtualDevice.deviceInfo.label + "'");
+    if (!System.getModule("com.vmware.library.vc.vm.network").isSupportedNic(vcVirtualDevice)) {
+        System.debug("Network interface: '" + vcVirtualDevice.deviceInfo.label + "' not supported, skipping...");
+        continue;
+    }
+
+    if (vcVirtualDevice.deviceInfo.label != label) {
+        System.debug("Network interface: '" + vcVirtualDevice.deviceInfo.label + "' does not match requested label: '" + label + "', skipping...");
+        continue;
+    }
+
+    System.log("Setting network interface  '" + vcVirtualDevice.deviceInfo.label + "': connected: " + connected + ", startConnected: " + startConnected);
+    var vcVirtualDeviceConfigSpec = new VcVirtualDeviceConfigSpec();
+    vcVirtualDeviceConfigSpec.operation = VcVirtualDeviceConfigSpecOperation.edit;
+    vcVirtualDeviceConfigSpec.device = vcVirtualDevice;
+    vcVirtualDeviceConfigSpec.device.connectable.startConnected = startConnected;  
+    vcVirtualDeviceConfigSpec.device.connectable.connected = connected;  
+
+    var vcVirtualMachineConfigSpec = new VcVirtualMachineConfigSpec();
+    vcVirtualMachineConfigSpec.deviceChange = [vcVirtualDeviceConfigSpec];
+
+    virtualMachine.reconfigVM_Task(vcVirtualMachineConfigSpec);
+
+    return;
+}
+
+throw "No NIC found the label '" + label + "'";]]></script>
+</dunes-script-module>

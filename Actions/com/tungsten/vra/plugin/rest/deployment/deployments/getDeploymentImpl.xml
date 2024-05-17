@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getDeploymentImpl" result-type="Any" api-version="6.0.0" id="41d99eed-2dba-42a0-85a4-6098c595ead3" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.plugin.rest.deployment.deployments">
+  <param n="vraHost" t="VRA:Host"><![CDATA[]]></param>
+  <param n="deploymentId" t="string"><![CDATA[]]></param>
+  <param n="expand" t="Array/string"><![CDATA[]]></param>
+  <param n="deleted" t="boolean"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var urlParameters = System.getModule("com.tungsten.vra.plugin.rest").createUrlParametersImpl(new Properties({deleted: deleted, expand: expand}));
+
+var resource = System.getModule("com.tungsten.vra.plugin.rest").executeRequestImpl(vraHost, "/deployment/api/deployments/" + deploymentId + urlParameters, "GET", null);
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return resource;]]></script>
+</dunes-script-module>

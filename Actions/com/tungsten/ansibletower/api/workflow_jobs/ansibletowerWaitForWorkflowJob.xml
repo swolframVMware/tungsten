@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="ansibletowerWaitForWorkflowJob" result-type="Any" api-version="6.0.0" id="acb7cbab-a6ae-47dc-96d8-5b30aff3d923" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.ansibletower.api.workflow_jobs">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <param n="id" t="string"><![CDATA[]]></param>
+  <param n="initialWait" t="string"><![CDATA[millis]]></param>
+  <param n="retryWait" t="number"><![CDATA[millis]]></param>
+  <param n="timeout" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+ 
+var job;
+
+System.log("Initially waiting '" + initialWait + "' millis to start checking on job");
+System.sleep(initialWait);
+
+var start = System.getCurrentTime();
+
+while(true) { 
+    if((System.getCurrentTime() - start) > timeout) {
+        throw "Timeout waiting on job '" + id + "'";
+    }
+
+    System.log("Checking on job, '" + id + "'...");
+    job = System.getModule("com.tungsten.ansibletower.api.workflow_jobs").ansibletowerGetWorkflowJob(environment, id);
+
+    if(job.finished != null) {
+        break;
+    }
+
+    System.log("Waiting " + retryWait + " millis to check on the completion of job, '" + id + "'...");
+    System.sleep(retryWait);    
+}
+System.log("'" + jobId + "' finished.");
+
+System.debug("Job Details: " + JSON.stringify(job));
+
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return job;]]></script>
+</dunes-script-module>

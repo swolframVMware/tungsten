@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="patchFabricVsphereDatastores" result-type="Any" api-version="6.0.0" id="9154a349-29a2-46dc-a3f4-38d0cdd89e68" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.api.iaas.fabric-vsphere-datastores">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <param n="id" t="string"><![CDATA[]]></param>
+  <param n="tags" t="Array/CompositeType(key:string,value:string):tag"><![CDATA[]]></param>
+  <param n="properties" t="Properties"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var response = System.getModule("com.tungsten.vra.plugin.rest.iaas.fabric-vsphere-datastores").patchFabricVsphereDatastoresImpl(System.getModule("com.tungsten.vra.plugin.rest").getVRAHostImpl(environment), id, tags, properties);
+
+System.debug("Patch Fabric vSphere Datastore = " + JSON.stringify(response));
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return response;]]></script>
+</dunes-script-module>

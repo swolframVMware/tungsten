@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="ansibletowerExecuteJobTemplateByNameV1" result-type="Any" api-version="6.0.0" id="41de0e8d-0798-4138-847f-5d61a5e4b432" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.ansibletower.api.job_templates">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <param n="name" t="string"><![CDATA[]]></param>
+  <param n="data" t="Any"><![CDATA[Ansible Platform data payload]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var response = System.getModule("com.tungsten.ansibletower.api.job_templates").ansibletowerExecuteJobTemplateV1(environment, encodeURIComponent(name) + "++", data);
+
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return response;]]></script>
+</dunes-script-module>

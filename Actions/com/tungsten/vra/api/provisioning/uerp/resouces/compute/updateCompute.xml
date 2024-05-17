@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="updateCompute" result-type="Any" api-version="6.0.0" id="f364deb1-e70c-4d34-8b22-e74928fc33cf" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.api.provisioning.uerp.resouces.compute">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <param n="resourceId" t="string"><![CDATA[]]></param>
+  <param n="compute" t="Properties"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var response = System.getModule("com.tungsten.vra.plugin.rest.provisioning.uerp.resouces.compute").updateComputeImpl(System.getModule("com.tungsten.vra.plugin.rest").getVRAHostImpl(environment), resourceId, JSON.stringify(compute));
+
+System.debug("Update Compute with id '" + resourceId + "' = " + JSON.stringify(response));
+
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return response;]]></script>
+</dunes-script-module>

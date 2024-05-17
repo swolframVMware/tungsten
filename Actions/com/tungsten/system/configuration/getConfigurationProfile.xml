@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getConfigurationProfile" result-type="string" api-version="6.0.0" id="161d6564-982f-447d-bb81-06cd8a1ba76f" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.system.configuration">
+  <param n="name" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+ 
+var value = main(name);
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return value;
+ 
+function main(name) {
+    var configurationElement = System.getModule("com.tungsten.vro.configuration").getConfigurationElementInBase("system/configuration/" + System.getModule("com.tungsten.vra.plugin.rest").getDefaultvRAHostnameImpl(), "profiles");
+ 
+    if(configurationElement == undefined || configurationElement == null) {
+        throw "Configuration not found for : " +  System.getModule("com.tungsten.vra.plugin.rest").getDefaultvRAHostnameImpl();
+    }
+    
+    var attribute = configurationElement.getAttributeWithKey(name);
+    if(attribute == undefined || attribute == null) {
+        throw "No profile found for : " + name
+    }
+ 
+    System.debug("Integration "+ name +" is " + configurationElement.getAttributeWithKey(name).value);
+    return configurationElement.getAttributeWithKey(name).value;
+}]]></script>
+</dunes-script-module>

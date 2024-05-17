@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="setConfigurationElementAttribute" result-type="void" api-version="6.0.0" id="d1d2207c-3ac8-4f74-a06d-11fb6ba37ff3" version="0.0.0" allowed-operations="vfe" category-name="com.tungsten.vro.configuration">
+  <param n="configurationElementPath" t="string"><![CDATA[]]></param>
+  <param n="configurationElementName" t="string"><![CDATA[]]></param>
+  <param n="attributeName" t="string"><![CDATA[]]></param>
+  <param n="attributeValue" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet(['attributeValue']));
+
+var configurationElement = System.getModule("com.tungsten.vro.configuration").getConfigurationElementInBase(configurationElementPath, configurationElementName);
+
+configurationElement.setAttributeWithKey(attributeName, attributeValue);
+configurationElement.saveToVersionRepository();
+
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return;]]></script>
+</dunes-script-module>

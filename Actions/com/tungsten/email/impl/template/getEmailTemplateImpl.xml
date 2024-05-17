@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getEmailTemplateImpl" result-type="Properties" api-version="6.0.0" id="dd80529c-18cc-4870-9e62-51a8430bf809" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.email.impl.template">
+  <param n="service" t="string"><![CDATA[]]></param>
+  <param n="name" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+ 
+var structure = JSON.parse(
+    System.getModule("com.tungsten.vro.resource").convertResourcecElementToString(System.getModule("com.tungsten.vro.resource").getResourceElement(service + "/email/templates/" + name, "email.json"))
+);
+
+var content = getContent(structure.frame.path, structure.frame.name);
+
+content = content.replace(
+    "[header]",
+    getContent(structure.header.path, structure.header.name)
+);
+
+content = content.replace(
+    "[style]",
+     getStyles(structure.styles)
+);
+
+content = content.replace(
+    "[body]",
+    getContent(structure.body.path, structure.body.name)
+);
+
+content = content.replace(
+    "[footer]",
+    getContent(structure.footer.path, structure.footer.name)
+);
+
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return new Properties() {
+    subject: structure.subject,
+    contentType: structure.contentType,
+    content: content
+};
+
+/**
+ * 
+ */
+function getStyles(styles) {
+    var content = "";
+
+    for each(var style in styles) {
+        content += getContent(style.path, style.name);
+    }
+
+    return content;
+}
+
+/**
+ * 
+ */
+function getContent(path, name) {
+    return System.getModule("com.tungsten.vro.resource").convertResourcecElementToString(System.getModule("com.tungsten.vro.resource").getResourceElement(path, name));
+}]]></script>
+</dunes-script-module>

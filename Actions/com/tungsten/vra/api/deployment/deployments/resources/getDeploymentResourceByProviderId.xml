@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getDeploymentResourceByProviderId" result-type="Any" api-version="6.0.0" id="96dd1d8c-e348-439f-b54b-9c6232add946" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.api.deployment.deployments.resources">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <param n="deploymentId" t="string"><![CDATA[]]></param>
+  <param n="providerId" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var response = System.getModule("com.tungsten.vra.api.deployment.deployments.resources").getDeploymentResources(System.getModule("com.tungsten.system.configuration").getConfigurationProfile("vra"), deploymentId);
+
+
+var found = false;
+var resource = null;
+for each(resource in response.content) {
+    if(resource.properties.providerId == providerId) {
+        found = true;
+        break
+    }
+}
+
+if(!found) {
+    throw "Resource with provider id: '" + providerId + "', not found in deployment: '" + deploymentId + "'";
+}
+
+System.debug("Return resource from deployment = '" + deploymentId + "' with provider id = '" + providerId + "' = " + JSON.stringify(resource));
+
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return resource;]]></script>
+</dunes-script-module>

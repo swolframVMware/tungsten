@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="ansibletowerExecuteJobTemplateV1" result-type="Any" api-version="6.0.0" id="89173693-24e8-44db-9163-7c92cde95521" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.ansibletower.api.job_templates">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <param n="id" t="string"><![CDATA[]]></param>
+  <param n="data" t="Any"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+ 
+var configuration = System.getModule("com.tungsten.ansibletower.impl.configuration").getEnvironmentConfigurationImpl(environment, "host");
+ 
+var restHost = System.getModule("com.tungsten.ansibletower.impl.rest").getRestHostImpl(configuration.url, configuration.importCertificate);
+
+var response = System.getModule("com.tungsten.ansibletower.impl.rest.job_templates").ansibletowerExecuteJobTemplateImplV1(restHost, configuration.username, configuration.password, id, data);
+
+var content = JSON.parse(response.contentAsString);
+System.debug("Execute job template,'" + id + "', response: " + response.contentAsString);
+
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return content;]]></script>
+</dunes-script-module>

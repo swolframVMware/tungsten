@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<config-element id="86475ce0-91da-49bd-b105-4c0f1942ee3f" version="0.0.0" allowed-operations="vfe">
+  <display-name><![CDATA[host]]></display-name>
+  <atts>
+    <att name="url" type="string" read-only="false">
+      <value encoded="n"><![CDATA[https://ansibletower.wellsfargo.com/api/v2]]></value>
+    </att>
+    <att name="username" type="string" read-only="false">
+      <value encoded="n"><![CDATA[ansbl-lcd-prod]]></value>
+    </att>
+    <att name="password" type="SecureString" read-only="false">
+      <value encoded="n"><![CDATA[__NULL__]]></value>
+    </att>
+    <att name="importCertificate" type="boolean" read-only="false">
+      <value encoded="n"><![CDATA[true]]></value>
+    </att>
+  </atts>
+</config-element>

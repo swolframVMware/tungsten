@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="fetchBySourceAndTypeImpl" result-type="string" api-version="6.0.0" id="654fdce7-1e5d-432a-948f-6c4c21702b67" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.plugin.rest.form-service.forms">
+  <param n="vraHost" t="string"><![CDATA[]]></param>
+  <param n="sourceType" t="number"><![CDATA[]]></param>
+  <param n="sourceId" t="string"><![CDATA[]]></param>
+  <param n="formType" t="number"><![CDATA[]]></param>
+  <param n="formFormat" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var urlParameters = System.getModule("com.tungsten.vra.plugin.rest").createUrlParametersImpl(new Properties({sourceType: sourceType, sourceId: sourceId, formType: formType, formFormat: formFormat}));
+ 
+var topics = System.getModule("com.tungsten.vra.plugin.rest").executeRequestImpl(vraHost, "/form-service/api/forms/fetchBySourceAndType" + urlParameters, "GET", null);
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return topics;]]></script>
+</dunes-script-module>

@@ -1,0 +1,94 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getManagedRestHost" result-type="REST:RESTHost" api-version="6.0.0" id="c52db025-e41c-4d5e-b34d-6a28451ee8ce" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.rest">
+  <param n="url" t="string"><![CDATA[]]></param>
+  <param n="name" t="string"><![CDATA[]]></param>
+  <param n="authType" t="string"><![CDATA[]]></param>
+  <param n="username" t="string"><![CDATA[]]></param>
+  <param n="password" t="SecureString"><![CDATA[]]></param>
+  <param n="visiblePassword" t="SecureString"><![CDATA[]]></param>
+  <param n="domain" t="string"><![CDATA[]]></param>
+  <param n="importCertificate" t="boolean"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet(['password', 'visiblePassword']));
+ 
+if(importCertificate) {
+    importCertificate(url);
+}
+ 
+var restHost = getRestHostByName(name);
+ 
+if(restHost == null) {
+    return createRestHost(url, name, authType, username, password, domain);
+}
+ 
+return verifyAndUpdateRestHost(restHost, url, authType, username, password, visiblePassword, domain);
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return restHost;
+ 
+function verifyAndUpdateRestHost(restHost, url, authType, username, password, visiblePassword, domain) {
+    if(    
+        restHost.url != url || 
+        restHost.authentication.type != authType ||
+        restHost.authentication.rawAuthProperties[2] != visiblePassword ||
+        restHost.authentication.rawAuthProperties[1] != username ||
+        restHost.authentication.rawAuthProperties[4] != domain) {
+ 
+        System.log("Updating rest host with the name '" + restHost + "'")
+ 
+        restHost.authentication = RESTAuthenticationManager.createAuthentication(
+            authType,
+            ["Shared Session", username, password, "", domain]
+        );
+ 
+        restHost.url = url;
+        
+        restHost = RESTHostManager.getHost(
+            RESTHostManager.updateHost(restHost).id
+        );
+    } else {
+        System.debug("No update required for the rest host with the name '" + restHost + "'");
+    }
+ 
+    return restHost;
+}
+ 
+function getRestHostByName(name) {
+    var restHostIds = RESTHostManager.getHosts();
+    var restHost;
+ 
+    for each (var restHostId in restHostIds) {
+        restHost = RESTHostManager.getHost(restHostId)
+        if(restHost.name == name) {
+            return restHost;
+        }
+    }
+ 
+    System.log("REST Host with name '" + name + "' not found.");
+    return null;
+}
+ 
+function createRestHost(url, name, authType, username, password, domain) {
+    System.log("Creating inveotry REST Host with name '" + name + "'.");
+    var restHost = RESTHostManager.createHost(name);
+ 
+    restHost.url = url;
+    restHost.authentication = RESTAuthenticationManager.createAuthentication(
+        authType,
+        ["Shared Session", username, password, "", domain]
+    );
+ 
+    return RESTHostManager.getHost(
+        RESTHostManager.addHost(
+            restHost
+        ).id
+    );
+}
+ 
+function importCertificate(url) {
+    var ld = Config.getKeystores().getImportCAFromUrlAction();
+    var model = ld.getModel();
+    model.value = url;
+    error = ld.execute();
+}]]></script>
+</dunes-script-module>

@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="createFormImpl" result-type="void" api-version="6.0.0" id="a903ef1d-4156-4356-b219-61e521ae0354" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.plugin.rest.form-service.forms">
+  <param n="vraHost" t="string"><![CDATA[]]></param>
+  <param n="id" t="string"><![CDATA[]]></param>
+  <param n="name" t="string"><![CDATA[]]></param>
+  <param n="form" t="string"><![CDATA[]]></param>
+  <param n="sourceType" t="string"><![CDATA[]]></param>
+  <param n="sourceId" t="string"><![CDATA[]]></param>
+  <param n="type" t="string"><![CDATA[]]></param>
+  <param n="tenant" t="string"><![CDATA[]]></param>
+  <param n="status" t="string"><![CDATA[]]></param>
+  <param n="formFormat" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var data = {
+    "id": id,
+    "name": name,
+	"form": form,
+    "sourceType": sourceType,
+    "sourceId": sourceId,
+    "type": type,
+    "tenant": tenant,
+    "status": status,
+    "formFormat": formFormat
+};
+
+System.warn("???????????????????????????????????");
+System.log(JSON.stringify(data));
+System.warn("???????????????????????????????????");
+
+System.getModule("com.tungsten.vra.plugin.rest").executeRequestImpl(vraHost, "/form-service/api/forms", "POST", JSON.stringify(data));
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return;]]></script>
+</dunes-script-module>

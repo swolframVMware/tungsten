@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getProjects" result-type="Any" api-version="6.0.0" id="5c5ebbf0-bf95-45cf-b198-cb63d8acb4e2" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.api.iaas.projects">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <param n="top" t="number"><![CDATA[]]></param>
+  <param n="skip" t="string"><![CDATA[]]></param>
+  <param n="orderby" t="string"><![CDATA[]]></param>
+  <param n="filter" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var projects = System.getModule("com.tungsten.vra.plugin.rest.iaas.projects").getProjectsImpl(System.getModule("com.tungsten.vra.plugin.rest").getVRAHostImpl(environment), top, skip, orderby, filter);
+
+System.debug("Get projects response = " + JSON.stringify(projects));
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return projects;]]></script>
+</dunes-script-module>

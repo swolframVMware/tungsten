@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getZone" result-type="Any" api-version="6.0.0" id="6673ffd5-05fe-4fc0-9cc3-aa878cfbf8b5" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.api.iaas.zones">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <param n="resourceId" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var zone = System.getModule("com.tungsten.vra.plugin.rest.iaas.zones").getZoneImpl(System.getModule("com.tungsten.vra.plugin.rest").getVRAHostImpl(environment), resourceId);
+
+System.debug("Zone with id '" + resourceId + "' = " + JSON.stringify(zone));
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return zone;]]></script>
+</dunes-script-module>

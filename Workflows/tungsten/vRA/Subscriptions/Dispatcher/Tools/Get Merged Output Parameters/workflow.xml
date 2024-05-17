@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="d5c283b7-a876-477b-866a-3648d196356b" version="0.0.0" api-version="6.0.0" allowed-operations="vfe" editor-version="2.0" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Get Merged Output Parameters]]></display-name>
+  <position y="50.0" x="100.0"/>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <in-binding/>
+    <position y="50.0" x="320.0"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item0" type="task">
+    <display-name><![CDATA[Get Merged Output Parameters]]></display-name>
+    <script encoded="false"><![CDATA["use strict"
+
+var response = System.getModule("com.tungsten.vra.api.event-broker.topics").getTopics(System.getModule("com.tungsten.system.configuration").getConfigurationProfile("vra"), 0, 10000, null);
+
+var topics = response.content;
+System.log("Topics query returned " + Object.keys(topics).length + " topics." );
+
+var outParameters = new Properties();
+for each(var topic in topics) {
+    if(topic.id.indexOf("compute.") == 0) {
+        outParameters = processTopic(topic, outParameters);
+    }
+}
+
+displayOutParmeters(outParameters);
+
+/**
+ * 
+ */
+function displayOutParmeters(outParameters) {
+    var display = "\n***************** Merged Output Parameters *****************";
+    for each(var key in outParameters.keys) {
+        display += "\n" + key + " :: " + outParameters[key];
+    }
+
+    System.log(display);
+}
+
+
+/**
+ * 
+ */
+function processTopic(topic, outParameters) {
+    System.log("\tProcessing topic: " + topic.id);
+    var fields = topic.schema.fields;
+    for each(var field in fields) {
+        if(field.readOnly == false) {
+            outParameters = processField(field, outParameters);
+        }
+    }
+
+    return outParameters;
+}
+
+/**
+ * 
+ */
+function processField(field, outParameters) {
+    System.log("\t\tProcessing field: " + field.id + " :: " + field.dataType.typeId);
+
+    if( (outParameters.get(field.id) != undefined) && (outParameters.get(field.id) != field.dataType.typeId)) {
+        throw "Field with same name but different data type!"
+    }
+
+    outParameters.put(field.id, field.dataType.typeId + (field.multiValued ? "-Array" : ""));
+
+    return outParameters;
+}
+
+]]></script>
+    <in-binding/>
+    <out-binding/>
+    <description><![CDATA[Simple task with custom script capability.]]></description>
+    <position y="60.0" x="170.0"/>
+  </workflow-item>
+  <presentation/>
+</workflow>

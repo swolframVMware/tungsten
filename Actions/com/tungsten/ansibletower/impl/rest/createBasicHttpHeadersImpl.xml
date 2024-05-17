@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="createBasicHttpHeadersImpl" result-type="Properties" api-version="6.0.0" id="d220491a-93f1-4845-a48e-ad44fcc1e9da" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.ansibletower.impl.rest">
+  <param n="username" t="string"><![CDATA[]]></param>
+  <param n="password" t="SecureString"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet(['password']));
+
+var headers = new Properties();
+headers.put("Accept", "application/json");
+headers.put("Content-Type", "application/json");
+headers.put("Authorization", System.getModule("com.tungsten.rest").createBasicAuthenticationHeader(username, password))
+
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return headers;]]></script>
+</dunes-script-module>

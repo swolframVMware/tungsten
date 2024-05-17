@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getSubscriptions" result-type="Any" api-version="6.0.0" id="46cafe9c-c738-4771-b140-7835e1dde475" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.api.event-broker.subscriptions">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <param n="page" t="string"><![CDATA[]]></param>
+  <param n="size" t="number"><![CDATA[]]></param>
+  <param n="orderby" t="string"><![CDATA[]]></param>
+  <param n="filter" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var subscriptions = System.getModule("com.tungsten.vra.plugin.rest.event-broker.subscriptions").getSubscriptionsImpl(System.getModule("com.tungsten.vra.plugin.rest").getVRAHostImpl(environment), page, size, orderby, filter);
+
+System.debug("Get subscriptions response = " + JSON.stringify(subscriptions));
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return subscriptions;]]></script>
+</dunes-script-module>

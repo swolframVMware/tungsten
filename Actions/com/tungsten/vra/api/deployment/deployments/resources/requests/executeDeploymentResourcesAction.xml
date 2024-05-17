@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="executeDeploymentResourcesAction" result-type="Any" api-version="6.0.0" id="cff24c54-cc84-429e-b64b-32ae1e5784e8" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.api.deployment.deployments.resources.requests">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <param n="resourceId" t="string"><![CDATA[]]></param>
+  <param n="actionId" t="string"><![CDATA[]]></param>
+  <param n="reason" t="string"><![CDATA[]]></param>
+  <param n="inputs" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var request = System.getModule("com.tungsten.vra.plugin.rest.deployment.deployments.resources.request").executeDeploymentResourcesActionsImpl(System.getModule("com.tungsten.vra.plugin.rest").getVRAHostImpl(environment), resourceId, actionId, reason, inputs);
+
+System.debug("Request of '" + actionId + "' = " + JSON.stringify(request));
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return request;]]></script>
+</dunes-script-module>

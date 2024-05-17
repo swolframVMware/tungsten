@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getLoggedInUserOrgs" result-type="Any" api-version="6.0.0" id="b08c159c-ea41-4eab-b0e3-d1da84485a03" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.api.csp.gateway.am.api.user.orgs">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <param n="expand" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var response = System.getModule("com.tungsten.vra.plugin.rest.csp.gateway.am.api.user.orgs").getLoggedInUserOrgsImpl(System.getModule("com.tungsten.vra.plugin.rest").getVRAHostImpl(environment), expand);
+
+System.debug("Get user organizations = " + JSON.stringify(response));
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return response;]]></script>
+</dunes-script-module>

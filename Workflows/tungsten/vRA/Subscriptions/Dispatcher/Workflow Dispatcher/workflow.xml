@@ -1,0 +1,434 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="64ea39b7-1aa0-46ff-9b22-2e64d81246eb" version="0.0.0" api-version="6.0.0" allowed-operations="vfe" editor-version="2.0" restartMode="0" resumeFromFailedMode="2">
+  <display-name><![CDATA[Workflow Dispatcher]]></display-name>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="inputProperties" type="Properties"/>
+    <param name="eventTopicId" type="string"/>
+  </input>
+  <output>
+    <param name="placementIds" type="Array/string"/>
+    <param name="customProperties" type="Properties"/>
+    <param name="tags" type="Properties"/>
+    <param name="tagsToDelete" type="Properties"/>
+    <param name="image" type="string"/>
+    <param name="hostSelectionIds" type="Array/string"/>
+    <param name="imageRef" type="string"/>
+    <param name="resourceNames" type="Array/string"/>
+    <param name="initialPowerOn" type="boolean"/>
+  </output>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <in-binding/>
+    <position y="50.0" x="340.0"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item0" type="task">
+    <display-name><![CDATA[Workflow Dispatcher]]></display-name>
+    <script encoded="false"><![CDATA["use strict"
+
+var FAILURE_MANAGER_WORKFLOW_ID = "031d2144-7f08-4890-8bc5-9ab21a9251c8";
+var DEFAULT_TIMEOUT = 120; //minutes
+var DEFAULT_STATUS_CHECK_INTERVAL = 30; //seconds
+var THIS_WORKFLOW = workflow;
+
+if(eventTopicId == null || eventTopicId.length == 0) {
+    System.debug("eventTopicId input not defined, getting context varible, '__metadata_eventTopicId'");
+    eventTopicId = System.getContext().getParameter("__metadata_eventTopicId");
+}
+
+System.log("Managing all Failure Locks...");
+var previousFailureOccurred = manageFailureLocks(inputProperties.deploymentId);
+
+System.log("Processing topic: '" + eventTopicId + "'");
+workflowDispatcher(inputProperties, eventTopicId, previousFailureOccurred);    
+ 
+ 
+/**
+ * 
+ */
+function workflowDispatcher(inputProperties, eventTopicId, previousFailureOccurred) { 
+    var workflowDispatcherData = getWorkflowDispatcherData(inputProperties, eventTopicId);
+
+    System.debug("Got workflow dispatcher data: " + JSON.stringify(workflowDispatcherData));
+    var failureOccured = false;
+    for each(var dispatcherWorkflow in workflowDispatcherData.workflows[eventTopicId]) {
+        try {
+            processWorkflowDispatcherData(inputProperties, eventTopicId, workflowDispatcherData, dispatcherWorkflow, previousFailureOccurred);
+        } catch(exception) {
+            if(dispatcherWorkflow.continueOnFailure || workflowDispatcherData.continueOnFailure) {
+                failureOccured = true;
+                previousFailureOccurred = true;
+
+                System.error("Continuing on error executing '" + dispatcherWorkflow.path + "/" + dispatcherWorkflow.name + "': " + exception)
+            } else {
+                if (workflowDispatcherData.renameDeploymentOnFailure || workflowDispatcherData.destroyDeploymentOnFailure) {
+                    System.log("Destroy on failure or rename on failure seleceted, launching manage failure on do not continue on error");
+                    manageFailure(
+                        eventTopicId,
+                        inputProperties.deploymentId,
+                        workflowDispatcherData.renameDeploymentOnFailure, 
+                        workflowDispatcherData.failureDeploymentPostfix,
+                        workflowDispatcherData.destroyDeploymentOnFailure
+                    );
+                }
+                throw exception;
+            }
+        }
+    }
+
+    if (failureOccured && (workflowDispatcherData.renameDeploymentOnFailure || workflowDispatcherData.destroyDeploymentOnFailure) ) {
+        System.log("Destroy on failure or rename on failure selected, launching manage failure on continue on error");
+        manageFailure(
+            eventTopicId,
+            inputProperties.deploymentId,
+            workflowDispatcherData.renameDeploymentOnFailure, 
+            workflowDispatcherData.failureDeploymentPostfix,
+            workflowDispatcherData.destroyDeploymentOnFailure
+        );
+    }
+
+    setOutputsOfDispatcher(inputProperties);
+}
+
+/**
+ * 
+ */
+function processWorkflowDispatcherData(inputProperties, eventTopicId, workflowDispatcherData, dispatcherWorkflow, previousFailureOccurred) {
+    dispatcherWorkflow = addDefaultsDispatcherWorkflow(
+        workflowDispatcherData,
+        dispatcherWorkflow
+    );
+
+    System.debug("Processing workflow  data: " + JSON.stringify(dispatcherWorkflow));    
+
+    if(dispatcherWorkflow.requestOrigin != undefined && dispatcherWorkflow.requestOrigin != null && dispatcherWorkflow.requestOrigin.length != 0) {
+
+        System.log("requestOrigin exist, Getting the request...");
+        var request = System.getModule("com.tungsten.vra.api.deployment.requests").getRequest(System.getModule("com.tungsten.system.configuration").getConfigurationProfile("vra"), inputProperties.requestId);
+
+        System.log("Looking for '" + request.name + "' in '" + dispatcherWorkflow.requestOrigin + "'");
+
+        if(!checkIfElementPresent(dispatcherWorkflow.requestOrigin, request.name)) {
+            System.warn("Request name '" + request.name + "' not found in requestOrigin '" + dispatcherWorkflow.requestOrigin + "', not executing");
+            return;
+        } else{
+            System.log("Request name '" + request.name + "' found in requestOrigin '" + dispatcherWorkflow.requestOrigin + "'");
+        }
+    } 
+
+    var workflowToken = executeWorkflow(
+        System.getModule("com.tungsten.vro.workflow").getWorkflowByName(dispatcherWorkflow.path, dispatcherWorkflow.name),
+        inputProperties,
+        System.getContext(),
+        eventTopicId,
+        previousFailureOccurred
+    );
+
+    System.getModule("com.tungsten.vro.debug.logging").dumpWorkflowDataForVRLI(workflowToken, System.getContext(), inputProperties);
+
+    var status = waitForWorkflowToken(
+        workflowToken, 
+        dispatcherWorkflow.timeout, 
+        dispatcherWorkflow.statusCheckInterval
+    );     
+
+    if(status.toLowerCase() != "completed") {
+        throw "Workflow, '" + workflowToken.name + "', ended with a status of '" + status + "'";
+    }
+
+    inputProperties = mergeWorkflowOutputs(
+        inputProperties,
+        workflowToken,
+        System.getModule("com.tungsten.vro.workflow").getWorkflowByName(dispatcherWorkflow.path, dispatcherWorkflow.name)
+    );
+}
+
+/**
+ * 
+ */
+function getWorkflowDispatcherData(inputProperties, eventTopicId) {
+        switch (eventTopicId.split(".")[0]) {
+        case "compute":
+            return JSON.parse(inputProperties.customProperties.workflowDispatcher);            
+            break;
+        case "deployment":
+            return mergeRequestInputs(
+                inputProperties,
+                JSON.parse(inputProperties.requestInputs.workflowDispatcher)
+            );
+            break;
+        default:
+            throw "Unsupported event topic type: " + eventTopicId;
+    }
+}
+
+/**
+ * 
+ */
+function mergeRequestInputs(inputProperties, workflowDispatcherData) {
+    if(workflowDispatcherData.continueOnFailure == undefined && inputProperties.requestInputs.workflowDispatcher_continueOnFailure != undefined) {
+        workflowDispatcherData.continueOnFailure = inputProperties.requestInputs.workflowDispatcher_continueOnFailure;
+    }
+
+    if(workflowDispatcherData.renameDeploymentOnFailure == undefined && inputProperties.requestInputs.workflowDispatcher_renameDeploymentOnFailure != undefined) {
+        workflowDispatcherData.renameDeploymentOnFailure = inputProperties.requestInputs.workflowDispatcher_renameDeploymentOnFailure;
+    }
+
+    if(workflowDispatcherData.destroyDeploymentOnFailure == undefined && inputProperties.requestInputs.workflowDispatcher_destroyDeploymentOnFailure != undefined) {
+        workflowDispatcherData.destroyDeploymentOnFailure = inputProperties.requestInputs.workflowDispatcher_destroyDeploymentOnFailure;
+    }
+
+    if(workflowDispatcherData.failureDeploymentPostfix == undefined && inputProperties.requestInputs.workflowDispatcher_failureDeploymentPostfix != undefined) {
+        workflowDispatcherData.failureDeploymentPostfix = inputProperties.requestInputs.workflowDispatcher_failureDeploymentPostfix;
+    }    
+    
+    return workflowDispatcherData;
+}
+
+/**
+ * 
+ */
+function manageFailure(eventTopicId, deploymentId, renameDeploymentOnFailure, failureDeploymentPostfix, destroyDeploymentOnFailure) {
+    if(eventTopicId.toLowerCase().indexOf("removal") > 0) {
+        System.warn("Not executing failure manager on destroy phase: '" + eventTopicId + "'");
+        return;
+    }
+    if(inputProperties.requestId != undefined && inputProperties.requestId != null && inputProperties.requestId.length > 0) {
+        System.log("requestId exist in inputProperties, checking request origin....");
+        var request = System.getModule("com.tungsten.vra.api.deployment.requests").getRequest(System.getModule("com.tungsten.system.configuration").getConfigurationProfile("vra"), inputProperties.requestId);
+
+        if(request.name.toLowerCase() != "create") {
+            System.warn("Failure manager will only during the create request, not exeuting...");
+            return;
+        }
+    }
+    
+    System.debug("Executing Failure Manager workflow...");
+
+    var workflow = Server.getWorkflowWithId(FAILURE_MANAGER_WORKFLOW_ID);
+    var workflowToken = workflow.execute(
+        new Properties(
+            {
+                deploymentId: deploymentId,
+                renameDeploymentOnFailure: renameDeploymentOnFailure,
+                failureDeploymentPostfix: failureDeploymentPostfix,
+                lockId: getManageFailureLockId(deploymentId),
+                destroyDeploymentOnFailure: destroyDeploymentOnFailure,
+                failedOnSubscription: true,
+                __tokenName:  createTokenName(workflow, inputProperties, eventTopicId)
+            }
+        )
+    )
+
+    System.log("Failure Manager workflow '" + workflow.workflowCategory.path + "/" + workflow.name + "' started with workflow token id: " + workflowToken.id);
+    return workflowToken;
+}
+
+/**
+ * This function ensures that the locks that are in the vRO system have matching workflows that are running, this is to ensure we always cleanup after ourselves.
+ */
+function manageFailureLocks(deploymentId) {
+    var locks = LockingSystem.retrieveAll();
+
+    for each(var lock in locks) {
+        System.debug("Inspecting lock: '" + lock + "'");
+        var lockId = lock.split(",")[0];
+        var lockOwner = lock.split(",")[1];
+
+        if (lockId.indexOf(getManageFailureLockIdPrefix()) == 0) {
+            System.log("Found an relevant lock: '" + lock + "'");
+            var workflowTokenStatus = Server.getWorkflowTokenState(lockOwner);
+            System.log("Workflow, '" + lockOwner + "' state is: '" + workflowTokenStatus + "'");
+            if(!(workflowTokenStatus != null && (workflowTokenStatus.toLowerCase() == "running" || workflowTokenStatus.toLowerCase() == "waiting" || workflowTokenStatus.toLowerCase() == "waiting-signal"))) {
+                System.log("Workflow, '" + lockOwner + "' is not running, unlocking.");
+                LockingSystem.unlock(lockId, lockOwner);
+            } else if (lockId == getManageFailureLockId(deploymentId)) {
+                System.warn("Found a previous previous, active lock for this deployment: '" + lock + "'") ;
+                previousFailureOccurred = true;
+            }
+        }
+
+        return previousFailureOccurred;
+    }
+}
+
+/**
+ * 
+ */
+function getManageFailureLockId(deploymentId) {
+    return getManageFailureLockIdPrefix() + deploymentId;
+}
+
+/**
+ * 
+ */
+function getManageFailureLockIdPrefix() {
+    return Server.getWorkflowWithId(FAILURE_MANAGER_WORKFLOW_ID).name  + " - ";
+}
+
+/**
+ * 
+ */
+function setOutputsOfDispatcher(inputProperties) {
+    for each(var parameter in THIS_WORKFLOW.currentWorkflow.outParameters) {
+        if(inputProperties[parameter.name] != undefined) { 
+            eval(parameter.name + " = inputProperties[parameter.name]");
+        }
+    }
+}
+
+/**
+ * 
+ */
+function mergeWorkflowOutputs(inputProperties, workflowToken, workflow) {
+    var outputParameters = workflowToken.getOutputParameters();
+
+    for each(var key in outputParameters.keys) {
+        if(inputProperties[key] == undefined) {
+            System.error("Workflow, '" +  workflow.name + "', has an output variable, '" + key + "', that is not in inputProperties.");
+            continue;
+        }
+
+        System.debug("Workflow, '" +  workflow.name + "', set variable, '" + key + "', in inputProperties.");
+        if(outputParameters[key] != undefined && outputParameters[key] != null && new String(outputParameters[key]) != "__NULL__") {
+            inputProperties[key] = outputParameters[key];
+        }
+    }
+
+    return inputProperties;
+}
+    
+/**
+ * 
+ */
+function addDefaultsDispatcherWorkflow(workflowDispatcherData, dispatcherWorkflow) {
+    if(workflowDispatcherData.continueOnFailure != undefined) {
+        dispatcherWorkflow.continueOnFailure = false;
+    }
+
+    if(dispatcherWorkflow.timeout == undefined) {
+        dispatcherWorkflow.timeout = DEFAULT_TIMEOUT;
+    }
+ 
+    if(dispatcherWorkflow.statusCheckInterval == undefined) {
+       dispatcherWorkflow.statusCheckInterval = DEFAULT_STATUS_CHECK_INTERVAL;
+    }
+ 
+    return dispatcherWorkflow;
+}
+ 
+/**
+ * 
+ */
+function waitForWorkflowToken(workflowToken, timeout, statusCheckInterval) {
+    var startTime = System.getCurrentTime();
+
+    while(workflowToken.state.toLowerCase() == "running" || workflowToken.state.toLowerCase() == "waiting" || workflowToken.state.toLowerCase() == "waiting-signal") {
+        System.log("Checking on workflow: '" + workflowToken.name + "' with status: '" + workflowToken.state + "'");
+
+        if(System.getCurrentTime() - startTime > (timeout * 1000 * 60)) {
+            workflowToken.cancel();
+            System.error(workflowToken.name + " timed out after " + (System.getCurrentTime() - startTime) + " milliseconds, attempting to cancel workflow!");
+
+            return "timeout";
+        }
+
+        System.log("Waiting " + (statusCheckInterval) + " seconds to check workflow: '" + workflowToken.name + "'");
+        System.sleep(statusCheckInterval * 1000);
+    }
+
+    System.log(workflowToken.name + " ended with status: '" + workflowToken.state + "'");
+
+    return workflowToken.state;
+}
+ 
+/**
+ * 
+ */
+function executeWorkflow(workflow, inputProperties, context, eventTopicId, previousFailureOccurred) {
+    System.debug("Executing workflow '" + workflow.workflowCategory.path + "/" + workflow.name + "'");
+
+    var workflowToken = workflow.execute(
+        new Properties(
+            {
+                inputProperties: inputProperties,
+                __tokenName:  createTokenName(workflow, inputProperties, eventTopicId),
+                context: getContextAsProperties(context),
+                previousFailureOccurred: previousFailureOccurred
+            }
+        )
+    )
+
+    System.log("Workflow '" + workflow.workflowCategory.path + "/" + workflow.name + "' starting with workflow token id: " + workflowToken.id);
+    return workflowToken;
+}
+ 
+/**
+ * 
+ */
+function getContextAsProperties(context) {
+    var properties = new Properties;
+ 
+    for each(var parameterName in System.getContext().parameterNames()) {
+        properties.put(parameterName, context.getParameter(parameterName));
+    }
+ 
+    return properties;
+}
+
+/**
+ * 
+ */
+function createTokenName(workflow, inputProperties, eventTopicId) {
+    var deployment = System.getModule("com.tungsten.vra.api.deployment.deployments").getDeployment(System.getModule("com.tungsten.system.configuration").getConfigurationProfile("vra"), inputProperties.deploymentId)
+
+    switch (eventTopicId.split(".")[0]) {
+        case "compute":
+            return workflow.name + " :: " + inputProperties.resourceNames[0] + " :: " + deployment.name;     
+            break;
+        case "deployment":
+            return workflow.name + " :: " + deployment.name;
+            break;
+        default:
+            throw "Unsupported event topic type: " + eventTopicId;
+    }
+}
+
+/**
+ * 
+ */
+function checkIfElementPresent(array, element) {
+    for each(item in array) {
+        if (item == element) {
+            return true;
+        }
+    }
+
+    return false;
+}]]></script>
+    <in-binding>
+      <bind name="inputProperties" type="Properties" export-name="inputProperties"/>
+      <bind name="eventTopicId" type="string" export-name="eventTopicId"/>
+    </in-binding>
+    <out-binding>
+      <bind name="customProperties" type="Properties" export-name="customProperties"/>
+      <bind name="hostSelectionIds" type="Array/string" export-name="hostSelectionIds"/>
+      <bind name="image" type="string" export-name="image"/>
+      <bind name="imageRef" type="string" export-name="imageRef"/>
+      <bind name="initialPowerOn" type="boolean" export-name="initialPowerOn"/>
+      <bind name="placementIds" type="Array/string" export-name="placementIds"/>
+      <bind name="resourceNames" type="Array/string" export-name="resourceNames"/>
+      <bind name="tags" type="Properties" export-name="tags"/>
+      <bind name="tagsToDelete" type="Properties" export-name="tagsToDelete"/>
+    </out-binding>
+    <description><![CDATA[Simple task with custom script capability.]]></description>
+    <position y="60.0" x="180.0"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="inputProperties">
+      <desc><![CDATA[inputProperties]]></desc>
+    </p-param>
+    <p-param name="eventTopicId">
+      <desc><![CDATA[eventTopicId]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

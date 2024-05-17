@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getVRAHostImpl" result-type="VRA:Host" api-version="6.0.0" id="e640ff7a-4838-477a-8b37-f0c7cd76f103" version="0.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.plugin.rest">
+  <param n="name" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+ 
+var vraHosts =  VraHostManager.findHostsByType("vra-onprem");
+
+var vraHost;
+var found = false;
+for each(vraHost in vraHosts) {
+    if(vraHost.name == name) {
+        found = true;
+        break;
+    } 
+}
+
+if(!found) {
+    throw "No vRA Host found with the name '" + name + "'";
+}
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return vraHost;]]></script>
+</dunes-script-module>

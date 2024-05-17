@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getMachine" result-type="Any" api-version="6.0.0" id="586d5a6a-9aed-4640-b7dd-d74e02c9e455" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.api.iaas.machines">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <param n="resourceId" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var machine = System.getModule("com.tungsten.vra.plugin.rest.iaas.machines").getMachineImpl(System.getModule("com.tungsten.vra.plugin.rest").getVRAHostImpl(environment), resourceId);
+
+System.debug("Machine with id '" + resourceId + "' = " + JSON.stringify(machine));
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return machine;]]></script>
+</dunes-script-module>

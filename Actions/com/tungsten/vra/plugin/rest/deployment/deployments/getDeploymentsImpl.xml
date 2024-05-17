@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getDeploymentsImpl" result-type="Any" api-version="6.0.0" id="b6f3aec3-bfe3-49d7-b37d-3a0904680f38" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.plugin.rest.deployment.deployments">
+  <param n="vraHost" t="VRA:Host"><![CDATA[]]></param>
+  <param n="page" t="string"><![CDATA[]]></param>
+  <param n="size" t="string"><![CDATA[]]></param>
+  <param n="sort" t="string"><![CDATA[]]></param>
+  <param n="ids" t="string"><![CDATA[]]></param>
+  <param n="search" t="string"><![CDATA[]]></param>
+  <param n="deploymentName" t="string"><![CDATA[]]></param>
+  <param n="deploymentStatus" t="string"><![CDATA[]]></param>
+  <param n="projects" t="string"><![CDATA[]]></param>
+  <param n="resourceTypes" t="string"><![CDATA[]]></param>
+  <param n="cloudAccounts" t="string"><![CDATA[]]></param>
+  <param n="cloudTypes" t="string"><![CDATA[]]></param>
+  <param n="requestedBy" t="string"><![CDATA[]]></param>
+  <param n="ownedBy" t="string"><![CDATA[]]></param>
+  <param n="tags" t="string"><![CDATA[]]></param>
+  <param n="createdAt" t="string"><![CDATA[]]></param>
+  <param n="expiresAt" t="string"><![CDATA[]]></param>
+  <param n="input" t="string"><![CDATA[]]></param>
+  <param n="lastUpdatedAt" t="string"><![CDATA[]]></param>
+  <param n="expandResources" t="string"><![CDATA[]]></param>
+  <param n="expandLastRequest" t="string"><![CDATA[]]></param>
+  <param n="expandProject" t="string"><![CDATA[]]></param>
+  <param n="expand" t="string"><![CDATA[]]></param>
+  <param n="lastRequestStatus" t="string"><![CDATA[]]></param>
+  <param n="deleted" t="string"><![CDATA[]]></param>
+  <param n="top" t="string"><![CDATA[]]></param>
+  <param n="skip" t="string"><![CDATA[]]></param>
+  <param n="orderby" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+ 
+var urlParameters = System.getModule("com.tungsten.vra.plugin.rest").createUrlParametersImpl(new Properties({page: page, size: size, sort: sort, ids: ids, search: search, name: encodeURIComponent(deploymentName), status: deploymentStatus, projects: projects, resourceTypes: resourceTypes, cloudAccounts: cloudAccounts, cloudTypes: cloudTypes, requestedBy: requestedBy, ownedBy: ownedBy, tags: tags, createdAt: createdAt, expiresAt: expiresAt, lastUpdatedAt: lastUpdatedAt, expandResources: expandResources, expandLastRequest: expandLastRequest, expandProject: expandProject, expand: expand, lastRequestStatus: lastRequestStatus, deleted: deleted, $top: top, $skip: skip, $orderby: orderby}));
+
+var response = System.getModule("com.tungsten.vra.plugin.rest").executeRequestImpl(vraHost, "/deployment/api/deployments" + urlParameters, "GET", null);
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return response;]]></script>
+</dunes-script-module>

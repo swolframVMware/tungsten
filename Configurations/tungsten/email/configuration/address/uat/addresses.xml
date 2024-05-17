@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<config-element id="6e0b92df-e06b-45a6-b56e-59263e1d1af3" version="0.0.0" allowed-operations="vfe">
+  <display-name><![CDATA[addresses]]></display-name>
+  <atts>
+    <att name="fromAddress" type="string" read-only="false">
+      <value encoded="n"><![CDATA[no-reply@cc-vra.testint.cloud.wellsfargo.net]]></value>
+    </att>
+    <att name="administratorAddress" type="string" read-only="false">
+      <value encoded="n"><![CDATA[mark.milgram@wellsfargo.com]]></value>
+    </att>
+    <att name="fromName" type="string" read-only="false">
+      <value encoded="n"><![CDATA[no-reply@cc-vra.testint.cloud.wellsfargo.net]]></value>
+    </att>
+  </atts>
+</config-element>

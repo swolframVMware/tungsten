@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getVRAHostnameImpl" result-type="string" api-version="6.0.0" id="b83b040b-3494-42bc-8d55-76044ab5a8da" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.plugin.rest">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+ 
+var vraHost = System.getModule("com.tungsten.vra.plugin.rest").getVRAHostImpl(environment);
+var hostname = vraHost.vraHost.split("//")[1];
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return hostname;]]></script>
+</dunes-script-module>

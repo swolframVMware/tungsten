@@ -1,0 +1,26 @@
+{
+	"subject": "[subject]",
+	"contentType": "text/html; charset=UTF-8",
+	"frame": {
+		"path": "email/templates/default",
+		"name": "frame.html"
+	},
+	"styles": [
+		{
+			"path": "email/templates/default",
+			"name": "style.css"
+		}
+	],
+	"header": {
+		"path": "email/templates/default",
+		"name": "header.html"
+	},
+	"footer": {
+		"path": "email/templates/default",
+		"name": "footer.html"
+	},
+	"body": {
+		"path": "email/email/templates/standard table",
+		"name": "body.html"
+	}
+}

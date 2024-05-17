@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="deleteEntitlement" result-type="Any" api-version="6.0.0" id="adb6bfe8-bb11-4167-b55d-91f40c045313" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.api.catalog.admin.entitlements">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <param n="id" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var response = System.getModule("com.wellsfargo.v2.vra.plugin.rest.catalog.admin.sources").deleteEntitlement(System.getModule("com.tungsten.vra.plugin.rest").getVRAHostImpl(environment), id);
+
+System.debug("Delete entitlement response = " + JSON.stringify(response));
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return response;]]></script>
+</dunes-script-module>

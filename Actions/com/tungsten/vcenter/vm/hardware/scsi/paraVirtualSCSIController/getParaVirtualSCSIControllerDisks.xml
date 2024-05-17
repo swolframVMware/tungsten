@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getParaVirtualSCSIControllerDisks" result-type="Properties" api-version="6.0.0" id="9331549b-d267-4e1d-bf6b-b348fa4c4600" version="0.0.0" allowed-operations="vfe" category-name="com.tungsten.vcenter.vm.hardware.scsi.paraVirtualSCSIController">
+  <param n="vm" t="VC:VirtualMachine"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA[var dev2slot = new Properties();
+var scsiDevices =  getScsiDevices(vm, dev2slot);
+
+var slot2id = new Properties(); 
+slot2id = getGuestPCIPaths(scsiDevices, dev2slot, slot2id);
+
+var ret = new Properties();
+
+for each (controller in vm.config.hardware.device) {
+    if (controller instanceof VcParaVirtualSCSIController) {
+        for each (device in vm.config.hardware.device) {
+            if (device.controllerKey == controller.key) {
+                ret[device.deviceInfo.label] = {
+                    pciid: slot2id.get(controller.slotInfo.pciSlotNumber),
+                    unit: device.unitNumber,
+                    sizeGB: device.capacityInBytes / 1024 / 1024 / 1024,
+                    label: device.deviceInfo.label,
+                    ctrl: controller.deviceInfo.label,
+                    controller: device.controllerKey - 1000
+                };               
+            }
+        }
+    }
+}
+
+System.debug("Paravirtual SCSI Controller DIsk: " + JSON.stringify(ret));
+return ret;
+
+/**
+ * 
+ */
+function getScsiDevices(vm, dev2slot) {
+    var scsiDevices = [];
+
+    for each (extraConfig in vm.config.extraConfig) {
+        if (extraConfig.key.toLowerCase().indexOf("pcislotnumber") > 0  && extraConfig.key.toLowerCase().match(/^pci|^scsi/)) {
+
+            var deviceName =  extraConfig.key.split(".")[0];
+
+            dev2slot[deviceName.toLowerCase()] = extraConfig.value;
+            if (deviceName.match(/scsi/)) {
+                scsiDevices.push(deviceName);
+            }
+        }
+    }    
+
+    return scsiDevices;
+}
+
+/**
+ * 
+ */
+function getGuestPCIPaths(scsiDevices, dev2slot, slot2id) {
+    for each (var scsiDevice in scsiDevices) {
+        slot2id = getGuestPCIPath(scsiDevice, dev2slot, slot2id);
+    }
+
+    return slot2id;
+}
+
+/**
+ * 
+ */
+function getGuestPCIPath(scsiDevice, dev2slot, slot2id) {
+    var func = 0;
+    var origdev = scsiDevice;
+    var origslot = dev2slot[scsiDevice];
+    while (true) {
+        var slot = dev2slot[scsiDevice];
+        var bus = slot >> 5;
+        var devNum = slot & 0x1F;
+        var bridgeNr = bus & 0x1F;
+        if (bridgeNr == 0) { break; }
+        func = bus >> 5;
+        scsiDevice = ('pcibridge' + parseInt(bridgeNr - 1)).toLowerCase();
+    }
+    devNumHex = parseInt(devNum).toString(16);
+    funcHex = parseInt(func).toString(16);
+    var loc = devNumHex + "." + funcHex;
+    slot2id.put(origslot, loc);
+
+    return slot2id;
+}]]></script>
+</dunes-script-module>

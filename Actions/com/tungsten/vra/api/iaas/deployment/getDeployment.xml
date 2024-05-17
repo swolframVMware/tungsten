@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getDeployment" result-type="Any" api-version="6.0.0" id="20d2bd68-3629-41b3-bf09-d6c1463ef891" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.api.iaas.deployment">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <param n="resourceId" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var deployment = System.getModule("com.tungsten.vra.plugin.rest.iaas.deployment").getDeploymentImpl(System.getModule("com.tungsten.vra.plugin.rest").getVRAHostImpl(environment), resourceId);
+
+System.debug("Deployment with id '" + resourceId + "' = " + JSON.stringify(deployment));
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return deployment;]]></script>
+</dunes-script-module>

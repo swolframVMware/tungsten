@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="ansibletowerGetJob" result-type="string" api-version="6.0.0" id="b7f799ad-9815-46b2-a248-156fa6cefbe5" version="1.0.3" allowed-operations="vfe" category-name="com.tungsten.ansibletower.api.jobs">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <param n="job_path" t="string"><![CDATA[Path to job]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+ 
+var configuration = System.getModule("com.tungsten.ansibletower.impl.configuration").getEnvironmentConfigurationImpl(environment, "host");
+ 
+var restHost = System.getModule("com.tungsten.ansibletower.impl.rest").getRestHostImpl(configuration.url, configuration.importCertificate);
+System.debug("ansibletowerGetJob - restHost: " + restHost)
+var response = System.getModule("com.tungsten.ansibletower.impl.rest.jobs").ansibletowerGetJobImpl(restHost, configuration.username, configuration.password, job_path);
+var content = JSON.parse(response.contentAsString);
+
+System.debug("Get job '" + job_path + "' response = " + JSON.stringify(content));
+
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return content;]]></script>
+</dunes-script-module>

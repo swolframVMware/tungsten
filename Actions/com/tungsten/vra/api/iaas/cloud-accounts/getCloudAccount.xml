@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getCloudAccount" result-type="Any" api-version="6.0.0" id="1754cfaf-79a2-48fe-ab0e-457c11b325ea" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.api.iaas.cloud-accounts">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <param n="resourceId" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var cloudAccount = System.getModule("com.tungsten.vra.plugin.rest.iaas.cloud-accounts").getCloudAccountImpl(System.getModule("com.tungsten.vra.plugin.rest").getVRAHostImpl(environment), resourceId);
+
+System.debug("Cloud Account with id '" + resourceId + "' = " + JSON.stringify(cloudAccount));
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return cloudAccount;]]></script>
+</dunes-script-module>

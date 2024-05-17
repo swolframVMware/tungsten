@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="createUrlParametersImpl" result-type="string" api-version="6.0.0" id="2e636b53-b06d-482e-b9c0-911b05360a89" version="0.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.plugin.rest">
+  <param n="parameters" t="Properties"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var urlParameters = "";
+
+for each(var key in parameters.keys) {
+    if(parameters[key] == null || parameters[key].length == 0) {
+        continue;
+    }
+
+    if(urlParameters.length == 0) {
+        urlParameters += "?";
+    } else {
+        urlParameters += "&";
+    }
+
+    if (System.getObjectClassName(parameters[key]).equalsIgnoreCase("Array")) {
+        urlParameters += parameters[key].map(function(element){
+            return this + "=" + element;
+        },key).join('&');
+    } else {
+        urlParameters += key + "=" + parameters[key];
+    }
+}
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return urlParameters;]]></script>
+</dunes-script-module>

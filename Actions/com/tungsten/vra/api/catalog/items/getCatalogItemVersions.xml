@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getCatalogItemVersions" result-type="Any" api-version="6.0.0" id="8851f8f8-c9d6-4951-a809-90cd6c07119a" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.api.catalog.items">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <param n="catalogItemId" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var response = System.getModule("com.tungsten.vra.plugin.rest.catalog.items").getCatalogItemVersionsImpl(System.getModule("com.tungsten.vra.plugin.rest").getVRAHostImpl(environment), catalogItemId);
+
+System.debug("Get catlog item version response = " + JSON.stringify(response));
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return response;]]></script>
+</dunes-script-module>

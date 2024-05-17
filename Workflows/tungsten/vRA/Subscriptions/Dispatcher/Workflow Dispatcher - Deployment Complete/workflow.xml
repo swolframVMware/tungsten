@@ -1,0 +1,117 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="2b4271d0-5a9e-4baf-ae88-a6574f3d18f1" version="0.0.0" api-version="6.0.0" allowed-operations="vfe" editor-version="2.0" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Workflow Dispatcher - Deployment Complete]]></display-name>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="__tokenName" type="string"/>
+    <param name="inputProperties" type="Properties"/>
+    <param name="eventTopicId" type="string"/>
+  </input>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <in-binding/>
+    <position y="50.0" x="340.0"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item0" type="task">
+    <display-name><![CDATA[Workflow Dispatcher - Deployment Complete]]></display-name>
+    <script encoded="false"><![CDATA["use strict"
+
+var FAILURE_MANAGER_WORKFLOW_ID = "031d2144-7f08-4890-8bc5-9ab21a9251c8";
+
+if(eventTopicId == null || eventTopicId.length == 0) {
+    System.debug("eventTopicId input not defined, getting context varible, '__metadata_eventTopicId'");
+    eventTopicId = System.getContext().getParameter("__metadata_eventTopicId");
+}
+
+var workflowDispatcherData = mergeRequestInputs(
+    inputProperties,
+    JSON.parse(inputProperties.requestInputs.workflowDispatcher)
+);
+
+System.debug("Executing Failure Manager workflow...");
+
+var workflow = Server.getWorkflowWithId(FAILURE_MANAGER_WORKFLOW_ID);
+var workflowToken = workflow.execute(
+    new Properties(
+        {
+            deploymentId: inputProperties.deploymentId,
+            renameDeploymentOnFailure: workflowDispatcherData.renameDeploymentOnFailure,
+            failureDeploymentPostfix: workflowDispatcherData.failureDeploymentPostfix,
+            lockId: getManageFailureLockId(inputProperties.deploymentId),
+            destroyDeploymentOnFailure: workflowDispatcherData.destroyDeploymentOnFailure,
+            continueOnFailure: workflowDispatcherData.continueOnFailure,
+            failedOnSubscription: false,
+            __tokenName:  createTokenName(workflow, inputProperties, eventTopicId)
+        }
+    )
+)
+
+/**
+ * 
+ */
+function mergeRequestInputs(inputProperties, workflowDispatcherData) {
+    if(workflowDispatcherData.continueOnFailure == undefined && inputProperties.requestInputs.workflowDispatcher_continueOnFailure != undefined) {
+        workflowDispatcherData.continueOnFailure = inputProperties.requestInputs.workflowDispatcher_continueOnFailure;
+    }
+
+    if(workflowDispatcherData.renameDeploymentOnFailure == undefined && inputProperties.requestInputs.workflowDispatcher_renameDeploymentOnFailure != undefined) {
+        workflowDispatcherData.renameDeploymentOnFailure = inputProperties.requestInputs.workflowDispatcher_renameDeploymentOnFailure;
+    }
+
+    if(workflowDispatcherData.destroyDeploymentOnFailure == undefined && inputProperties.requestInputs.workflowDispatcher_destroyDeploymentOnFailure != undefined) {
+        workflowDispatcherData.destroyDeploymentOnFailure = inputProperties.requestInputs.workflowDispatcher_destroyDeploymentOnFailure;
+    }
+
+    return workflowDispatcherData;
+}
+
+/**
+ * 
+ */
+function getManageFailureLockId(deploymentId) {
+    return getManageFailureLockIdPrefix() + deploymentId;
+}
+
+/**
+ * 
+ */
+function getManageFailureLockIdPrefix() {
+    return Server.getWorkflowWithId(FAILURE_MANAGER_WORKFLOW_ID).name  + " - ";
+}
+
+/**
+ * 
+ */
+function createTokenName(workflow, inputProperties, eventTopicId) {
+    var deployment = System.getModule("com.tungsten.vra.api.deployment.deployments").getDeployment(System.getModule("com.tungsten.system.configuration").getConfigurationProfile("vra"), inputProperties.deploymentId)
+
+    switch (eventTopicId.split(".")[0]) {
+        case "compute":
+            return workflow.name + " * " + inputProperties.resourceNames[0] + " * " + deployment.name;     
+            break;
+        case "deployment":
+            return workflow.name + " * " + deployment.name;
+            break;
+        default:
+            throw "Unsupported event topic type: " + eventTopicId;
+    }
+}]]></script>
+    <in-binding>
+      <bind name="inputProperties" type="Properties" export-name="inputProperties"/>
+      <bind name="eventTopicId" type="string" export-name="eventTopicId"/>
+    </in-binding>
+    <out-binding/>
+    <description><![CDATA[Simple task with custom script capability.]]></description>
+    <position y="60.0" x="180.0"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="__tokenName">
+      <desc><![CDATA[__tokenName]]></desc>
+    </p-param>
+    <p-param name="inputProperties">
+      <desc><![CDATA[inputProperties]]></desc>
+    </p-param>
+    <p-param name="eventTopicId">
+      <desc><![CDATA[eventTopicId]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

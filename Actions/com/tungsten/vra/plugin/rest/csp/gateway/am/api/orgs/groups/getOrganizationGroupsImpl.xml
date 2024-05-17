@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getOrganizationGroupsImpl" result-type="Any" api-version="6.0.0" id="cfb2704f-ced6-4116-adeb-3a9697a1f5f2" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.plugin.rest.csp.gateway.am.api.orgs.groups">
+  <param n="vraHost" t="VRA:Host"><![CDATA[]]></param>
+  <param n="organizationId" t="string"><![CDATA[]]></param>
+  <param n="pageStart" t="string"><![CDATA[]]></param>
+  <param n="pageLimit" t="string"><![CDATA[]]></param>
+  <param n="groupId" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var urlParameters = System.getModule("com.tungsten.vra.plugin.rest").createUrlParametersImpl(new Properties({pageStart: pageStart, pageLimit: pageLimit, groupId: groupId}));
+ 
+var response = System.getModule("com.tungsten.vra.plugin.rest").executeRequestImpl(vraHost, "/csp/gateway/am/api/orgs/" + organizationId + "/groups" + urlParameters, "GET", null);
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return response;]]></script>
+</dunes-script-module>

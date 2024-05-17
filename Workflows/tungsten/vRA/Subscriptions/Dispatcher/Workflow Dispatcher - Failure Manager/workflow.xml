@@ -1,0 +1,143 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="031d2144-7f08-4890-8bc5-9ab21a9251c8" version="0.0.0" api-version="6.0.0" allowed-operations="vfe" editor-version="2.0" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Workflow Dispatcher - Failure Manager]]></display-name>
+  <position y="50.0" x="100.0"/>
+  <input>
+    <param name="deploymentId" type="string"/>
+    <param name="renameDeploymentOnFailure" type="boolean"/>
+    <param name="__tokenName" type="string"/>
+    <param name="failureDeploymentPostfix" type="string"/>
+    <param name="lockId" type="string"/>
+    <param name="destroyDeploymentOnFailure" type="boolean"/>
+    <param name="failedOnSubscription" type="boolean"/>
+  </input>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <in-binding/>
+    <position y="50.0" x="340.0"/>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item0" type="task">
+    <display-name><![CDATA[Workflow Dispatcher - Failure Manager ]]></display-name>
+    <script encoded="false"><![CDATA["use strict"
+
+var TIMEOUT = 3 * 24 * 60 * 60 * 1000; //(Days * hours * minute * seconds * millis)
+var LOCK_OWNER = workflow.id;
+
+try {
+    System.log("Attempting to get a lock...");
+    var gotLock = LockingSystem.lock(lockId, LOCK_OWNER);
+
+    if(gotLock) {
+        System.log("Got a lock, continuing to process deployemnt...");
+        processDeployment(deploymentId, renameDeploymentOnFailure, failureDeploymentPostfix, destroyDeploymentOnFailure, failedOnSubscription);
+    } else {
+        System.log("Did not get a lock, exiting...");
+    }
+} catch(exception) {
+    throw exception;
+} finally {
+    System.log("Releasing lock...");
+    LockingSystem.unlock(lockId, LOCK_OWNER);
+}
+
+/**
+ * 
+ */
+function processDeployment(deploymentId, renameDeploymentOnFailure, failureDeploymentPostfix, destroyDeploymentOnFailure, failedOnSubscription) {
+    waitForDeploymentToComplete(deploymentId);
+
+    var deployment = System.getModule("com.tungsten.vra.api.deployment.deployments").getDeployment(System.getModule("com.tungsten.system.configuration").getConfigurationProfile("vra"), deploymentId); 
+
+    if((deployment.status != "CREATE_SUCCESSFUL" || failedOnSubscription)) {
+        System.log("The deployemnt had a failure with, deployment.status: '" + deployment.status + "', failedOnSubscription: " + failedOnSubscription);
+
+        if(!destroyDeploymentOnFailure && renameDeploymentOnFailure) {
+            System.log("Rename on failure requested.");
+            renameDeploymentWithPostfix(deploymentId, failureDeploymentPostfix);
+        } 
+
+        if(destroyDeploymentOnFailure) {
+            System.log("Destroy failure requested.");
+            destroyDeployment(deploymentId);
+        }
+    }
+}
+
+/**
+ * 
+ */
+function waitForDeploymentToComplete(deploymentId) {
+    var status = "";
+    do {
+        System.log("Waiting 5 minutes to check the status of the deployment...");
+        System.sleep(5 * 60 * 1000);
+        var deployment = System.getModule("com.tungsten.vra.api.deployment.deployments").getDeployment(System.getModule("com.tungsten.system.configuration").getConfigurationProfile("vra"), deploymentId);
+
+        status = deployment.status;
+        System.log("Deployment '" + deployment.name + "' status is: '" + deployment.status + "'");
+    } while (status.toUpperCase() == "CREATE_INPROGRESS"); 
+
+    System.log("Deployment completed, done waiting...");
+} 
+
+/**
+ * 
+ */
+function destroyDeployment(deploymentId) {
+    var deployment = System.getModule("com.tungsten.vra.api.deployment.deployments").getDeployment(System.getModule("com.tungsten.system.configuration").getConfigurationProfile("vra"), deploymentId);
+
+    System.warn("Destroying deployment: '" + deployment.name + "'");
+
+    System.getModule("com.tungsten.vra.api.deployment.deployments").destroyDeployment(System.getModule("com.tungsten.system.configuration").getConfigurationProfile("vra"), deploymentId);
+}
+
+/**
+ * 
+ */
+function renameDeploymentWithPostfix(deploymentId, failureDeploymentPostfix) {
+    var deployment = System.getModule("com.tungsten.vra.api.deployment.deployments").getDeployment(System.getModule("com.tungsten.system.configuration").getConfigurationProfile("vra"), deploymentId);
+
+
+    if(deployment.name.substring(deployment.name.length - failureDeploymentPostfix.length, deployment.name.length) == failureDeploymentPostfix) {
+        System.warn("Deployment already has post fix: " + deployment.name + failureDeploymentPostfix);
+    } else {
+        System.warn("Renaming deployment to: " + deployment.name + failureDeploymentPostfix);
+
+        var deployment = System.getModule("com.tungsten.vra.api.deployment.deployments").updateDeployment(System.getModule("com.tungsten.system.configuration").getConfigurationProfile("vra"), deploymentId, null, null, deployment.name + failureDeploymentPostfix);
+    }
+}]]></script>
+    <in-binding>
+      <bind name="deploymentId" type="string" export-name="deploymentId"/>
+      <bind name="failureDeploymentPostfix" type="string" export-name="failureDeploymentPostfix"/>
+      <bind name="lockId" type="string" export-name="lockId"/>
+      <bind name="destroyDeploymentOnFailure" type="boolean" export-name="destroyDeploymentOnFailure"/>
+      <bind name="failedOnSubscription" type="boolean" export-name="failedOnSubscription"/>
+      <bind name="renameDeploymentOnFailure" type="boolean" export-name="renameDeploymentOnFailure"/>
+    </in-binding>
+    <out-binding/>
+    <description><![CDATA[Simple task with custom script capability.]]></description>
+    <position y="60.0" x="180.0"/>
+  </workflow-item>
+  <presentation>
+    <p-param name="deploymentId">
+      <desc><![CDATA[deploymentId]]></desc>
+    </p-param>
+    <p-param name="renameDeploymentOnFailure">
+      <desc><![CDATA[renameDeploymentOnFailure]]></desc>
+    </p-param>
+    <p-param name="__tokenName">
+      <desc><![CDATA[__tokenName]]></desc>
+    </p-param>
+    <p-param name="failureDeploymentPostfix">
+      <desc><![CDATA[failureDeploymentPostfix]]></desc>
+    </p-param>
+    <p-param name="lockId">
+      <desc><![CDATA[lockId]]></desc>
+    </p-param>
+    <p-param name="destroyDeploymentOnFailure">
+      <desc><![CDATA[destroyDeploymentOnFailure]]></desc>
+    </p-param>
+    <p-param name="failedOnSubscription">
+      <desc><![CDATA[failedOnSubscription]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="ansibletowerExecuteWaitLog" result-type="void" api-version="6.0.0" id="3e713c05-4e13-4074-b463-35e1928ccfde" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.ansibletower.api.jobs">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <param n="jobTemplate" t="string"><![CDATA[]]></param>
+  <param n="data" t="string"><![CDATA[]]></param>
+  <param n="jobStatusWait" t="string"><![CDATA[]]></param>
+  <param n="jobTimeout" t="string"><![CDATA[]]></param>
+  <param n="workflowName" t="string"><![CDATA[]]></param>
+  <param n="workflowId" t="string"><![CDATA[]]></param>
+  <param n="byName" t="boolean"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+ 
+if(byName) {
+    var response = System.getModule("com.tungsten.ansibletower.api.job_templates").ansibletowerExecuteJobTemplateByNameV1(environment, jobTemplate, data);
+} else {
+    var response = System.getModule("com.tungsten.ansibletower.api.job_templates").ansibletowerExecuteJobTemplateV1(environment, jobTemplate, data);    
+}
+
+var jobId = response.id;
+
+var job = System.getModule("com.tungsten.ansibletower.api.jobs").ansibletowerWaitForJobV1(environment, jobId, jobStatusWait, jobTimeout);
+
+System.getModule("com.tungsten.ansibletower.api.jobs").logAnisibleJob(environment, jobId, jobTemplate, workflowName, workflowId);
+
+if(job.failed) {
+    throw "Error with workflow template, '" + jobTemplate + "', workflow job #: " + jobId + ". Dumped ansible stdout for each node to the logs.";
+}
+
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return;]]></script>
+</dunes-script-module>

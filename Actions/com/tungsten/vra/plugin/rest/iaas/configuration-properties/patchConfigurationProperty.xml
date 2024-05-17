@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="patchConfigurationProperty" result-type="Any" api-version="6.0.0" id="424f8319-3097-41fa-b313-100bcfde752a" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.plugin.rest.iaas.configuration-properties">
+  <param n="vraHost" t="VRA:Host"><![CDATA[]]></param>
+  <param n="key" t="string"><![CDATA[]]></param>
+  <param n="value" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var data = new Properties(
+    {
+        value:value,
+        key:key
+    }
+) 
+
+var response = System.getModule("com.tungsten.vra.plugin.rest").executeRequestImpl(vraHost, "/iaas/api/configuration-properties?apiVersion=2021-07-15", "PATCH", JSON.stringify(data));
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return response;]]></script>
+</dunes-script-module>

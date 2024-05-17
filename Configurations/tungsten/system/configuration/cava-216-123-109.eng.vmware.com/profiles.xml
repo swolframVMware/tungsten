@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<config-element id="b59d064f-0782-4aab-8889-f38bfe20c80a" version="0.0.0" allowed-operations="vfe">
+  <display-name><![CDATA[profiles]]></display-name>
+  <atts>
+    <att name="isp" type="string" read-only="false">
+      <value encoded="n"><![CDATA[development]]></value>
+    </att>
+    <att name="vra" type="string" read-only="false">
+      <value encoded="n"><![CDATA[Default]]></value>
+    </att>
+    <att name="servicenow" type="string" read-only="false">
+      <value encoded="n"><![CDATA[production]]></value>
+    </att>
+    <att name="emailhost" type="string" read-only="false">
+      <value encoded="n"><![CDATA[production]]></value>
+    </att>
+    <att name="emailaddresses" type="string" read-only="false">
+      <value encoded="n"><![CDATA[development]]></value>
+    </att>
+    <att name="ansibletower_nonprod" type="string" read-only="false">
+      <value encoded="n"><![CDATA[development]]></value>
+    </att>
+    <att name="ansibletower_prod" type="string" read-only="false">
+      <value encoded="n"><![CDATA[development]]></value>
+    </att>
+    <att name="edb" type="string" read-only="false">
+      <value encoded="n"><![CDATA[development]]></value>
+    </att>
+    <att name="rsa" type="string" read-only="false">
+      <value encoded="n"><![CDATA[production]]></value>
+    </att>
+    <att name="wellsfargo" type="string" read-only="false">
+      <value encoded="n"><![CDATA[development]]></value>
+    </att>
+    <att name="aap_nonprod" type="string" read-only="false">
+      <value encoded="n"><![CDATA[aap_uat]]></value>
+    </att>
+    <att name="aap_prod" type="string" read-only="false">
+      <value encoded="n"><![CDATA[aap_production]]></value>
+    </att>
+  </atts>
+</config-element>

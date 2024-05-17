@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="convertYamlToJson" result-type="Properties" api-version="6.0.0" id="6b5ee6d7-5d9a-4fa5-ba1c-99e3c25c75ec" version="0.0.0" allowed-operations="vfe" category-name="com.tungsten.yaml.json">
+  <environment><![CDATA[f111f23f-11ac-452c-9e65-0d67ee9e20f9]]></environment>
+  <param n="yaml" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA[import yaml
+
+def handler(context, inputs):
+    return (yaml.safe_load(inputs["yaml"]))]]></script>
+</dunes-script-module>

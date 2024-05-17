@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getMachineDisks" result-type="Any" api-version="6.0.0" id="aa8ad0d1-9286-4f20-a3e7-686903e30c5f" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.api.iaas.machines.disks">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <param n="resourceId" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var machine = System.getModule("com.tungsten.vra.plugin.rest.iaas.machines.disks").getMachineDisksImpl(System.getModule("com.tungsten.vra.plugin.rest").getVRAHostImpl(environment), resourceId);
+
+System.debug("Machine disks with id '" + resourceId + "' = " + JSON.stringify(machine));
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return machine;]]></script>
+</dunes-script-module>

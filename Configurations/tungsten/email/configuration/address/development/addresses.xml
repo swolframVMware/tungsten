@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<config-element id="aa76ac7d-a90d-4285-9bee-06f201408e25" version="0.0.0" allowed-operations="vfe">
+  <display-name><![CDATA[addresses]]></display-name>
+  <atts>
+    <att name="fromAddress" type="string" read-only="false">
+      <value encoded="n"><![CDATA[no-reply@dev.tungsten.com]]></value>
+    </att>
+    <att name="administratorAddress" type="string" read-only="false">
+      <value encoded="n"><![CDATA[scott@tungsten.com]]></value>
+    </att>
+    <att name="fromName" type="string" read-only="false">
+      <value encoded="n"><![CDATA[scott@tungsten.com]]></value>
+    </att>
+  </atts>
+</config-element>

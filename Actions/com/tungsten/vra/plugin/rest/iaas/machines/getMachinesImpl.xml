@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getMachinesImpl" result-type="Any" api-version="6.0.0" id="097ae087-0282-47b4-96b1-81b20bb445ae" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.plugin.rest.iaas.machines">
+  <param n="vraHost" t="VRA:Host"><![CDATA[]]></param>
+  <param n="skipOperationLinks" t="boolean"><![CDATA[]]></param>
+  <param n="top" t="string"><![CDATA[]]></param>
+  <param n="skip" t="string"><![CDATA[]]></param>
+  <param n="count" t="boolean"><![CDATA[]]></param>
+  <param n="select" t="string"><![CDATA[]]></param>
+  <param n="filter" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+var urlParameters = System.getModule("com.tungsten.vra.plugin.rest").createUrlParametersImpl(new Properties({skipOperationLinks: skipOperationLinks, $top: top, $skip: skip, $count: count, $select: select, $filter: filter}));
+ 
+var machines = System.getModule("com.tungsten.vra.plugin.rest").executeRequestImpl(vraHost, "/iaas/api/machines" + urlParameters, "GET", null);
+ 
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return machines;]]></script>
+</dunes-script-module>

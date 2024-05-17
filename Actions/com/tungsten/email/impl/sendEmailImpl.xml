@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="sendEmailImpl" result-type="string" api-version="6.0.0" id="26ebf56e-953f-4e6a-b113-28428089c556" version="0.0.0" allowed-operations="vfe" category-name="com.tungsten.email.impl">
+  <param n="host" t="string"><![CDATA[]]></param>
+  <param n="port" t="number"><![CDATA[]]></param>
+  <param n="username" t="string"><![CDATA[]]></param>
+  <param n="password" t="string"><![CDATA[]]></param>
+  <param n="sslType" t="string"><![CDATA[]]></param>
+  <param n="useSSL" t="boolean"><![CDATA[]]></param>
+  <param n="useStartTLS" t="boolean"><![CDATA[]]></param>
+  <param n="fromName" t="string"><![CDATA[]]></param>
+  <param n="fromAddress" t="string"><![CDATA[]]></param>
+  <param n="toAddress" t="string"><![CDATA[]]></param>
+  <param n="subject" t="string"><![CDATA[]]></param>
+  <param n="content" t="string"><![CDATA[]]></param>
+  <param n="contentType" t="string"><![CDATA[]]></param>
+  <param n="attachments" t="Array/MimeAttachment"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+ 
+var message = new EmailMessage(sslType);
+message.smtpHost = host;
+message.smtpPort = port;
+message.username =  getValue(username);
+message.password =  getValue(password);
+message.fromName = fromName;
+message.fromAddress = fromAddress;
+message.useSsl = useSSL;
+message.useStartTls = useStartTLS;
+message.toAddress = toAddress;
+message.subject = subject;
+message.addMimePart(content, contentType);
+
+if(attachments != undefined && attachments != null) {
+    for each(var attachment in attachments) {
+        message.addMimePart(attachment)
+    }
+}
+
+System.log(
+    "Sending mail to host: " + message.smtpHost + ":" + message.smtpPort +
+    " with user:" + message.username +
+    ", from:" + message.fromAddress + 
+    ", to:" + message.toAddress
+);
+
+message.sendMessage();
+
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return;
+
+/**
+ * 
+ */
+function getValue(value) {
+    if(value == undefined || value == null || new String(value).length == 0) {
+        return null;
+    }
+}]]></script>
+</dunes-script-module>

@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getEnvironmentAddressConfiguration" result-type="Properties" api-version="6.0.0" id="f16c38a1-6cc7-4edd-a872-d8afefb75e01" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.email.api.configuration">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+ 
+var configuration = System.getModule("com.tungsten.email.impl.configuration").getEnvironmentAddressConfigurationImpl(environment, "addresses");
+
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return configuration;]]></script>
+</dunes-script-module>

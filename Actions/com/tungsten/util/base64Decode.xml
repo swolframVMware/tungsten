@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="base64Decode" result-type="string" api-version="6.0.0" id="1332f113-f002-46db-9a9b-3aeb1313487e" version="0.0.0" allowed-operations="vfe" category-name="com.tungsten.util">
+  <runtime><![CDATA[python:3.7]]></runtime>
+  <param n="decode" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA[import json
+import base64
+
+def handler(context, inputs):
+    decode = inputs["decode"];
+    return  base64.b64decode(decode.encode("ascii")).decode("ascii");]]></script>
+</dunes-script-module>

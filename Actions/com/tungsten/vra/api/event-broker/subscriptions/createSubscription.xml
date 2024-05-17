@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="createSubscription" result-type="void" api-version="6.0.0" id="04fca02b-6c90-4f98-9758-167bfeb77a99" version="1.0.0" allowed-operations="vfe" category-name="com.tungsten.vra.api.event-broker.subscriptions">
+  <param n="environment" t="string"><![CDATA[]]></param>
+  <param n="type" t="string"><![CDATA[]]></param>
+  <param n="name" t="string"><![CDATA[]]></param>
+  <param n="description" t="string"><![CDATA[]]></param>
+  <param n="disabled" t="boolean"><![CDATA[]]></param>
+  <param n="eventTopicId" t="string"><![CDATA[]]></param>
+  <param n="blocking" t="string"><![CDATA[]]></param>
+  <param n="contextual" t="boolean"><![CDATA[]]></param>
+  <param n="criteria" t="string"><![CDATA[]]></param>
+  <param n="runnableType" t="string"><![CDATA[]]></param>
+  <param n="runnableId" t="string"><![CDATA[]]></param>
+  <param n="timeout" t="number"><![CDATA[]]></param>
+  <param n="priority" t="number"><![CDATA[]]></param>
+  <param n="recoverRunnableType" t="string"><![CDATA[]]></param>
+  <param n="recoverRunnableId" t="string"><![CDATA[]]></param>
+  <param n="projectId" t="string"><![CDATA[]]></param>
+  <param n="id" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+
+System.getModule("com.tungsten.vra.plugin.rest.event-broker.subscriptions").createSubscriptionImpl(System.getModule("com.tungsten.vra.plugin.rest").getVRAHostImpl(environment), type, name, description, disabled, eventTopicId, blocking, contextual, criteria, runnableType, runnableId, timeout, priority, recoverRunnableType, recoverRunnableId, projectId, id);
+
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return;]]></script>
+</dunes-script-module>
