@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="changeComputerOU" result-type="void" api-version="6.0.0" id="5adf4a18-06c8-440d-a179-d743d002f6e5" version="0.0.0" allowed-operations="vfe" category-name="com.tungsten.ad.api">
+  <param n="name" t="string"><![CDATA[]]></param>
+  <param n="ou" t="string"><![CDATA[]]></param>
+  <param n="adHost" t="AD:AdHost"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+ 
+var computerAd = ActiveDirectory.getComputerAD(
+    name,
+    adHost
+);
+
+if(computerAd == null) {
+    throw "No computer AD Object found with the name '" + name + "'"
+};
+
+ActiveDirectory.rename(
+    computerAd.distinguishedName,
+    computerAd.name,
+    ou,
+    adHost
+);
+
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return;]]></script>
+</dunes-script-module>

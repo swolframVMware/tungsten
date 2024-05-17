@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dunes-script-module name="getAdHostByName" result-type="AD:AdHost" api-version="6.0.0" id="9f0dab63-b46e-4d36-95b5-1faa8ae897e5" version="0.0.0" allowed-operations="vfe" category-name="com.tungsten.ad.api">
+  <param n="name" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA["use strict"
+eval(System.getModule("com.tungsten.vro.debug.logging").startActionSnippet());
+ 
+var hosts = AD_HostManager.findAllHosts();
+
+var foundHost = null;
+for each(var host in hosts) {
+    if(host.name.toLowerCase() == name.toLowerCase()) {
+        if(foundHost != null) {
+            throw "More than one AD host found with the name '" + name + "'";
+        } else {
+            foundHost = host;
+        }
+    }
+}
+
+if(foundHost == null) {
+    throw "No AD host found with the name '" + name + "'";
+}
+
+eval(System.getModule("com.tungsten.vro.debug.logging").endActionSnippet());
+return foundHost;]]></script>
+</dunes-script-module>

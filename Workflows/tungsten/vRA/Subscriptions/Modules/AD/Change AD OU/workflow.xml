@@ -1,18 +1,20 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item1" object-name="workflow:name=generic" id="cfae4a7f-2fe5-4874-93e1-1e07f646431c" version="0.0.0" api-version="6.0.0" allowed-operations="vfe" editor-version="2.0" restartMode="1" resumeFromFailedMode="0">
-  <display-name><![CDATA[Change AD OU]]></display-name>
-  <position y="50.0" x="100.0"/>
-  <input>
-    <param name="inputProperties" type="Properties"/>
-    <param name="__tokenName" type="string"/>
-  </input>
-  <workflow-item name="item0" type="end" end-mode="0">
-    <in-binding/>
-    <position y="50.0" x="340.0"/>
-  </workflow-item>
-  <workflow-item name="item1" out-name="item0" type="task">
-    <display-name><![CDATA[Change AD OU]]></display-name>
-    <script encoded="false"><![CDATA["use strict"
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:workflow xmlns:ns2="http://vmware.com/vco/workflow" root-name="item1" object-name="workflow:name=generic" id="cfae4a7f-2fe5-4874-93e1-1e07f646431c" editor-version="2.0" version="0.0.0" api-version="6.0.0" allowed-operations="vfe" restartMode="1" resumeFromFailedMode="0">
+    <display-name>Change AD OU</display-name>
+    <position y="50.0" x="100.0"/>
+    <input>
+        <param name="inputProperties" type="Properties"/>
+        <param name="__tokenName" type="string"/>
+    </input>
+    <output/>
+    <workflow-item name="item0" type="end" end-mode="0" comparator="0">
+        <in-binding/>
+        <out-binding/>
+        <position y="50.0" x="340.0"/>
+    </workflow-item>
+    <workflow-item name="item1" out-name="item0" type="task" comparator="0">
+        <display-name>Change AD OU</display-name>
+        <script encoded="false">"use strict"
 
 if(inputProperties.customProperties.ad_OU == undefined || inputProperties.customProperties.ad_OU == null || inputProperties.customProperties.ad_OU.length == 0) {
     System.warn("No ad_OU property, nothing to do.");
@@ -33,11 +35,11 @@ if(inputProperties.customProperties.ad_OU == undefined || inputProperties.custom
  * 
  */ 
 function changeOU(inputProperties) { 
-    var adHost = System.getModule("com.wellsfargo.v2.ad.api").getAdHostByName(
+    var adHost = System.getModule("com.tungsten.ad.api").getAdHostByName(
         inputProperties.customProperties.ad_domain
     );
 
-    System.getModule("com.wellsfargo.v2.ad.api").changeComputerOU(
+    System.getModule("com.tungsten.ad.api").changeComputerOU(
         inputProperties.resourceNames[0],
         inputProperties.customProperties.ad_OU,
         adHost
@@ -45,7 +47,9 @@ function changeOU(inputProperties) {
 }
 
 function sendFailureNotification(inputProperties, exception) {
-    var addresses = System.getModule("com.tungsten.email.api.configuration").getEnvironmentAddressConfiguration(System.getModule("com.tungsten.system.configuration").getConfigurationProfile("emailaddresses"));
+    var addresses = System.getModule("com.tungsten.email.api.configuration").getEnvironmentAddressConfiguration(
+        System.getModule("com.tungsten.system.configuration").getConfigurationProfile("emailaddresses")
+    );
 
     var table = new Properties(
         {
@@ -56,22 +60,32 @@ function sendFailureNotification(inputProperties, exception) {
     );
 
 
-System.getModule("com.tungsten.email.api").sendEmailFromTemplate(System.getModule("com.tungsten.system.configuration").getConfigurationProfile("emailhost"), "email", "standard table", new Properties({table_title: "Request Details", title: "Change OU for vm '" + inputProperties.resourceNames[0] + "' failed.", subject: "Change OU for vm '" + inputProperties.resourceNames[0] + "' failed.", description: "Change OU for vm '" + inputProperties.resourceNames[0] + "' failed.", table_header: "Request Details", table: table, vraURL: System.getModule("com.tungsten.vra.api").getVRAUrl(System.getModule("com.tungsten.system.configuration").getConfigurationProfile("vra"))}), addresses.fromName, addresses.fromAddress, addresses.administratorAddress);
+    System.getModule("com.tungsten.email.api").sendEmailFromTemplate(
+        System.getModule("com.tungsten.system.configuration").getConfigurationProfile("emailhost"),
+        "email", "standard table", 
+        new Properties(
+            {
+                table_title: "Request Details", 
+                title: "Change OU for vm '" + inputProperties.resourceNames[0] + "' failed.", 
+                subject: "Change OU for vm '" + inputProperties.resourceNames[0] + "' failed.", 
+                description: "Change OU for vm '" + inputProperties.resourceNames[0] + "' failed.", 
+                table_header: "Request Details", 
+                table: table, 
+                vraURL: System.getModule("com.tungsten.vra.api").getVRAUrl(System.getModule("com.tungsten.system.configuration").getConfigurationProfile("vra")
+            )
+        }
+        ),
+        addresses.fromName, 
+        addresses.fromAddress, 
+        addresses.administratorAddress
+    );
 
-}]]></script>
-    <in-binding>
-      <bind name="inputProperties" type="Properties" export-name="inputProperties"/>
-    </in-binding>
-    <out-binding/>
-    <description><![CDATA[Simple task with custom script capability.]]></description>
-    <position y="60.0" x="180.0"/>
-  </workflow-item>
-  <presentation>
-    <p-param name="inputProperties">
-      <desc><![CDATA[inputProperties]]></desc>
-    </p-param>
-    <p-param name="__tokenName">
-      <desc><![CDATA[__tokenName]]></desc>
-    </p-param>
-  </presentation>
-</workflow>
+}</script>
+        <in-binding>
+            <bind name="inputProperties" type="Properties" export-name="inputProperties"/>
+        </in-binding>
+        <out-binding/>
+        <description>Simple task with custom script capability.</description>
+        <position y="60.0" x="180.0"/>
+    </workflow-item>
+</ns2:workflow>
