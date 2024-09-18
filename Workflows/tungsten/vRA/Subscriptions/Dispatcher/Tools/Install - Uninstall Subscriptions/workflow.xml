@@ -63,7 +63,6 @@ function processTopic(topic, create, remove) {
  * 
  */
 function removeExistingSubscriptions(name) {
-    System.log("!!!!!!!!!: " + encodeURIComponent(name));
     var response = System.getModule("com.tungsten.vra.api.event-broker.subscriptions").getSubscriptions(System.getModule("com.tungsten.system.configuration").getConfigurationProfile("vra"), null, null, null, "(type%20eq%20%27RUNNABLE%27)%20and%20(%27" + encodeURIComponent(name) + "%27%20eq%20name)");
 
     for each(var subscription in response.content) {
